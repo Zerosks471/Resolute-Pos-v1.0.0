@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+
+  web:
+    depends_on: 
+      - api
+    build: ./frontend
+    ports:
+      - 5173:5173
+    environment:
+      VITE_BACKEND = "http://localhost:3000/api/v1"
+      VITE_BACKEND_SOCKET_IO=http://localhost:3000
+    develop:
+      watch:
+        - path: ./frontend/package.json
+          action: rebuild
+        - path: ./frontend/package-lock.json
+          action: rebuild
+        - path: ./frontend
+          target: /app
+          action: sync
+  api: 
+    depends_on: 
+      - db
+    build: ./backend
+    ports: 
+      - 3000:8000
+    environment: 
+      DB_URL: mysql://root:admin@localhost:3306/resolutepos
+    develop:
+      watch:
+        - path: ./backend/package.json
+          action: rebuild
+        - path: ./backend/package-lock.json
+          action: rebuild
+        - path: ./backend
+          target: /app
+          action: sync
+  db:
+    image: mysql:8.0.37
+    container_name: rposv1_mysql:8.0.37
+    restart: always                    
+    environment:
+      MYSQL_DATABASE: 'resolutepos_db'              
+      MYSQL_USER: 'root'                
+      MYSQL_PASSWORD: 'admin'         
+      MYSQL_ROOT_PASSWORD: 'admin'    
+    ports:
+      - 3306:3306                     
+    expose:
+      - 3306
+    volumes:
+      - mysql-db:/var/lib/resolutepos_db
