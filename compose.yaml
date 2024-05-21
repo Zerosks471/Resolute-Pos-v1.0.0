@@ -51,4 +51,4 @@ services:
     expose:
       - 3306
     volumes:
-      - mysql-db:/var/lib/resolutepos_db
+      - mysqldb:/var/lib/mysql
