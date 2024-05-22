@@ -7,8 +7,8 @@ services:
     ports:
       - 5173:5173
     environment:
-       - VITE_BACKEND=http://localhost:3000/api/v1
-       - VITE_BACKEND_SOCKET_IO=http://localhost:3000
+       - VITE_BACKEND= http://localhost:3000/api/v1
+       - VITE_BACKEND_SOCKET_IO= 
     develop:
       watch:
         - path: ./frontend/package.json
@@ -37,16 +37,14 @@ services:
           action: sync
   db:
     image: mysql:8.0.37
-    container_name: rposv1_mysql:8.0.37
+    container_name: rposv1mysql
     restart: always                    
     environment:
-      MYSQL_DATABASE: resolutepos_db              
-      MYSQL_USER: "root"               
-      MYSQL_PASSWORD: "admin"         
-      MYSQL_ROOT_PASSWORD: "admin"   
+      MYSQL_DATABASE: resolutepos_db                    
+      MYSQL_ROOT_PASSWORD: admin123  
+      MYSQL_User: root
+      MYSQL_PASSWORD: admin
     ports:
-      - 3306:3306                     
-    expose:
-      - 3306
+      - 3306:3306              
     volumes:
-      - /Users/W10M/Desktop/Resolute-Pos-v1.0.0resolutepos_db:/var/lib/mysql
+      - C:/Users/W10M/Desktop/Resolute-Pos-v1.0.0/resolutepos_db:/var/lib/mysql
