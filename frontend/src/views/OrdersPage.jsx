@@ -29,6 +29,7 @@ import { setDetailsForReceiptPrint } from "../helpers/ReceiptHelper";
 import { SocketContext } from "../contexts/SocketContext";
 import { initSocket } from "../utils/socket";
 import { textToSpeech } from "../utils/textToSpeech";
+import CashRegister from "../components/CashRegister"; // Import the Cash Register component
 
 export default function OrdersPage() {
   const printReceiptRef = useRef();
@@ -51,6 +52,7 @@ export default function OrdersPage() {
     summaryTotal: 0,
     summaryOrders: [],
     order: null,
+    showCashRegister: true, // Add state for showing Cash Register
   });
 
   useEffect(() => {
@@ -268,6 +270,7 @@ export default function OrdersPage() {
           summaryOrders: orders,
           completeOrderIds: orderIds,
           order: order,
+          showCashRegister: true, // Show Cash Register
         });
 
         document.getElementById("modal-order-summary-complete").showModal();
@@ -281,6 +284,7 @@ export default function OrdersPage() {
       toast.error(message);
     }
   };
+
   const btnPayAndComplete = async () => {
     const isPrintReceipt = printReceiptRef.current.checked || false;
 
@@ -446,6 +450,11 @@ export default function OrdersPage() {
       console.error(error);
       toast.error(message);
     }
+  };
+
+  const handleTransactionComplete = () => {
+    setState({ ...state, showCashRegister: false });
+    refreshOrders();
   };
 
   return (
@@ -760,6 +769,14 @@ export default function OrdersPage() {
             );
           })}
         </div>
+      )}
+
+      {state.showCashRegister && (
+        <CashRegister
+          total={state.summaryTotal}
+          currency={currency}
+          onTransactionComplete={handleTransactionComplete}
+        />
       )}
 
       {/* dialog: successful order item status update */}
