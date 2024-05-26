@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { saveTransaction } from "../controllers/transactions.controller";
 import NumberPad from "./NumberPad"; // Import NumberPad component
@@ -7,47 +7,6 @@ const CashRegisterModal = ({ total, currency, onTransactionComplete, onClose }) 
   const [amountReceived, setAmountReceived] = useState("");
   const [change, setChange] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("cash");
-  const [webSocket, setWebSocket] = useState(null);
-
-  useEffect(() => {
-    // Establish WebSocket connection
-    const ws = new WebSocket("wss://spin.spinpos.net:5555");
-
-    ws.onopen = () => {
-      console.log("WebSocket connection established.");
-      // Authenticate with SPIN
-      ws.send(
-        JSON.stringify({
-          messageType: "Login",
-          version: "1.0",
-          apiKey: "bi3CubBBZV",
-          registerId: "8732304",
-        })
-      );
-    };
-
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.messageType === "LoginResponse" && data.status === "success") {
-        console.log("Authenticated with SPIN.");
-      } else if (data.messageType === "PaymentResponse" && data.status === "approved") {
-        handleTransactionComplete();
-      } else if (data.messageType === "PaymentResponse" && data.status !== "approved") {
-        toast.error("Transaction failed. Please try again.");
-      }
-    };
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
-      toast.error("Failed to connect to the card terminal. Please try again.");
-    };
-
-    setWebSocket(ws);
-
-    return () => {
-      ws.close();
-    };
-  }, []);
 
   const handleAmountChange = (value) => {
     if (value === "." && amountReceived.includes(".")) return; // Prevent multiple decimal points
@@ -117,24 +76,7 @@ const CashRegisterModal = ({ total, currency, onTransactionComplete, onClose }) 
       return;
     }
 
-    if (paymentMethod === "credit") {
-      // Send payment details to Dejavoo terminal via SPIN
-      if (webSocket && webSocket.readyState === WebSocket.OPEN) {
-        const paymentDetails = JSON.stringify({
-          messageType: "Payment",
-          amount: total.toFixed(2),
-          transactionType: "sale",
-          invoice: "123456", // Example invoice number
-          operator: "operator1", // Example operator
-        });
-        webSocket.send(paymentDetails);
-        toast.loading("Processing credit card payment...");
-      } else {
-        toast.error("Failed to connect to the card terminal. Please try again.");
-      }
-    } else {
-      handleTransactionComplete();
-    }
+    handleTransactionComplete();
   };
 
   return (
