@@ -19,43 +19,6 @@ import { CURRENCIES } from "../config/currencies.config";
 import { setDetailsForReceiptPrint } from '../helpers/ReceiptHelper';
 
 export default function InvoicesPage() {
-  const [state, setState] = useState({
-    filter: "all",
-    fromDate: null,
-    toDate: null,
-    search: "",
-    searchResults: [],
-    spage: 1,
-    printSettings: null,
-    storeSettings: null,
-    currency: null
-  });
-
-  useEffect(() => {
-    async function init() {
-      try {
-        const res = await getInvoicesInit();
-        if (res.status == 200) {
-          const ordersInit = res.data;
-          const currency = CURRENCIES.find((c) => c.cc == ordersInit?.storeSettings?.currency);
-
-          setState({
-            ...state,
-            printSettings: ordersInit.printSettings,
-            storeSettings: ordersInit.storeSettings,
-            currency: currency.symbol,
-          });
-        }
-      } catch (error) {
-        console.error(error);
-        toast.dismiss();
-      }
-    }
-    init();
-  }, []);
-
-  // Rest of the code...
-}
 
   const filters = [
     { key: "today", value: "Today" },
@@ -67,6 +30,7 @@ export default function InvoicesPage() {
     { key: "custom", value: "Custom" },
   ];
 
+  const searchRef = useRef();
   const fromDateRef = useRef();
   const toDateRef = useRef();
   const filterTypeRef = useRef();
@@ -92,311 +56,300 @@ export default function InvoicesPage() {
 
     printSettings: null,
     storeSettings: null,
-    currency: null,
+    currency: null
   });
 
-    const InvoicesPage = () => {
-      const searchRef = useRef(null);
-      const [state, setState] = useState({
-        filter: "all",
-        fromDate: null,
-        toDate: null,
-        search: "",
-        searchResults: [],
-        spage: 1,
-        printSettings: null,
-        storeSettings: null,
-        currency: null
-      });
-
-      useEffect(()=>{
-        async function init(){
-          try {
-            const res = await getInvoicesInit();
-            if(res.status == 200) {
-              const ordersInit = res.data;
-              const currency = CURRENCIES.find((c)=>c.cc==ordersInit?.storeSettings?.currency);
-      
-              setState({
-                ...state,
-                printSettings: ordersInit.printSettings,
-                storeSettings: ordersInit.storeSettings,
-                currency: currency.symbol,
-              });
-            }
-          } catch (error) {
-            console.error(error);
-            toast.dismiss();
-            toast.error("Error loading orders! Please try later!");
-          }
+  useEffect(()=>{
+    async function init(){
+      try {
+        const res = await getInvoicesInit();
+        if(res.status == 200) {
+          const ordersInit = res.data;
+          const currency = CURRENCIES.find((c)=>c.cc==ordersInit?.storeSettings?.currency);
+  
+          setState({
+            ...state,
+            printSettings: ordersInit.printSettings,
+            storeSettings: ordersInit.storeSettings,
+            currency: currency.symbol,
+          });
         }
-        init();
-      },[]);
-
-      const {data: invoices, error, isLoading} = useInvoices({
-        type: state.filter,
-        from: state.fromDate,
-        to: state.toDate,
-      });
-
-      if (isLoading) {
-        return <Page>Please wait...</Page>;
+      } catch (error) {
+        console.error(error);
+        toast.dismiss();
+        toast.error("Error loading orders! Please try later!");
       }
+    }
+    init();
+  },[]);
 
-      if (error) {
-        return <Page>Error loading details! Please try later!</Page>;
-      }
+  const {data: invoices, error, isLoading} = useInvoices({
+    type: state.filter,
+    from: state.fromDate,
+    to: state.toDate,
+  });
 
-      const btnSearch = async () => {
-        const searchQuery = searchRef.current.value;
-        if (!new String(searchQuery).trim()) {
-          return;
-        }
+  if (isLoading) {
+    return <Page>Please wait...</Page>;
+  }
 
-        try {
-          toast.loading("Please wait...");
-          const res = await searchInvoices(new String(searchQuery).trim());
-          if(res.status == 200) {
-            toast.dismiss();
-            setState({
-              ...state,
-              search: searchQuery,
-              searchResults: res.data,
-              spage: 1,
-            }); 
-          } else {
-            toast.dismiss();
-            toast.error("No result found!");
-          }
-          
-        } catch (error) {
-          console.error(error);
-          const message = error.response.data.message || "Something went wrong! Try later!";
+  if (error) {
+    return <Page>Error loading details! Please try later!</Page>;
+  }
 
-          toast.dismiss();
-          toast.error(message);
-        }
-      }
-      const btnClearSearch = () => {
-        searchRef.current.value = null;
+  const btnSearch = async () => {
+    const searchQuery = searchRef.current.value;
+    if (!new String(searchQuery).trim()) {
+      return;
+    }
 
+    try {
+      toast.loading("Please wait...");
+      const res = await searchInvoices(new String(searchQuery).trim());
+      if(res.status == 200) {
+        toast.dismiss();
         setState({
           ...state,
-          search: "",
-          searchResults: [],
+          search: searchQuery,
+          searchResults: res.data,
           spage: 1,
+        }); 
+      } else {
+        toast.dismiss();
+        toast.error("No result found!");
+      }
+      
+    } catch (error) {
+      console.error(error);
+      const message = error.response.data.message || "Something went wrong! Try later!";
+
+      toast.dismiss();
+      toast.error(message);
+    }
+  }
+  const btnClearSearch = () => {
+    searchRef.current.value = null;
+
+    setState({
+      ...state,
+      search: "",
+      searchResults: [],
+      spage: 1,
+    });
+  };
+
+  const btnViewReceipt = async (orderIdsArr) => {
+    try {
+      toast.loading("Please wait...");
+      const res = await getInvoiceOrders(orderIdsArr); 
+      toast.dismiss();
+
+      if(res.status == 200) {
+        console.log(res.data);
+        console.log(orderIdsArr);
+        const {
+          subtotal, 
+          taxTotal, 
+          total,
+          orders: ordersArr
+        } = res.data;
+
+        const orders = [];
+        const orderIds = orderIdsArr.join(", ");
+
+        for (const o of ordersArr) {
+          const items = o.items;
+          items.forEach((i)=>{
+            const variant = i.variant_id ? {
+                id: i.variant_id,
+                title: i.variant_title,
+                price: i.variant_price
+            } : null;
+            orders.push({
+              ...i,
+              title: i.item_title,
+              addons_ids: i?.addons?.length > 0 ? i?.addons?.map((a)=>a.id):[],
+              variant: variant
+            });
+          })
+        }
+
+        const {customer_id, customer_type, customer_name, date, delivery_type} = ordersArr;
+
+        setDetailsForReceiptPrint({
+          cartItems: orders, deliveryType:delivery_type, customerType:customer_type, customer:{id: customer_id, name: customer_name}, tableId: null, currency:state.currency, storeSettings: state.storeSettings, printSettings:state.printSettings,
+          itemsTotal: subtotal,
+          taxTotal: taxTotal,
+          payableTotal: total, 
+          tokenNo: null,
+          orderId: orderIds
         });
-      };
 
-      const btnViewReceipt = async (orderIdsArr) => {
-        try {
-          toast.loading("Please wait...");
-          const res = await getInvoiceOrders(orderIdsArr); 
-          toast.dismiss();
+        const receiptWindow = window.open("/print-receipt", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+      }
+    } catch (error) {
+      const message = error?.response?.data?.message || "Error processing your request, Please try later!";
+      toast.dismiss();
+      console.error(error);
+      toast.error(message);
+    }
+  };
 
-          if(res.status == 200) {
-            console.log(res.data);
-            console.log(orderIdsArr);
-            const {
-              subtotal, 
-              taxTotal, 
-              total,
-              orders: ordersArr
-            } = res.data;
+  const btnPrintReceipt = async (orderIdsArr) => {
+    try {
+      toast.loading("Please wait...");
+      const res = await getInvoiceOrders(orderIdsArr); 
+      toast.dismiss();
 
-            const orders = [];
-            const orderIds = orderIdsArr.join(", ");
+      if(res.status == 200) {
+        console.log(res.data);
+        console.log(orderIdsArr);
+        const {
+          subtotal, 
+          taxTotal, 
+          total,
+          orders: ordersArr
+        } = res.data;
 
-            for (const o of ordersArr) {
-              const items = o.items;
-              items.forEach((i)=>{
-                const variant = i.variant_id ? {
-                    id: i.variant_id,
-                    title: i.variant_title,
-                    price: i.variant_price
-                } : null;
-                orders.push({
-                  ...i,
-                  title: i.item_title,
-                  addons_ids: i?.addons?.length > 0 ? i?.addons?.map((a)=>a.id):[],
-                  variant: variant
-                });
-              })
-            }
+        const orders = [];
+        const orderIds = orderIdsArr.join(", ");
 
-            const {customer_id, customer_type, customer_name, delivery_type} = ordersArr;
-
-            setDetailsForReceiptPrint({
-              cartItems: orders, deliveryType:delivery_type, customerType:customer_type, customer:{id: customer_id, name: customer_name}, tableId: null, currency:state.currency, storeSettings: state.storeSettings, printSettings:state.printSettings,
-              itemsTotal: subtotal,
-              taxTotal: taxTotal,
-              payableTotal: total, 
-              tokenNo: null,
-              orderId: orderIds
+        for (const o of ordersArr) {
+          const items = o.items;
+          items.forEach((i)=>{
+            const variant = i.variant_id ? {
+                id: i.variant_id,
+                title: i.variant_title,
+                price: i.variant_price
+            } : null;
+            orders.push({
+              ...i,
+              title: i.item_title,
+              addons_ids: i?.addons?.length > 0 ? i?.addons?.map((a)=>a.id):[],
+              variant: variant
             });
-
-          }
-        } catch (error) {
-          const message = error?.response?.data?.message || "Error processing your request, Please try later!";
-          toast.dismiss();
-          console.error(error);
-          toast.error(message);
+          })
         }
-      };
 
-      const btnPrintReceipt = async (orderIdsArr) => {
-        try {
-          toast.loading("Please wait...");
-          const res = await getInvoiceOrders(orderIdsArr); 
-          toast.dismiss();
+        const {customer_id, customer_type, customer_name, date, delivery_type} = ordersArr;
 
-          if(res.status == 200) {
-            console.log(res.data);
-            console.log(orderIdsArr);
-            const {
-              subtotal, 
-              taxTotal, 
-              total,
-              orders: ordersArr
-            } = res.data;
+        setDetailsForReceiptPrint({
+          cartItems: orders, deliveryType:delivery_type, customerType:customer_type, customer:{id: customer_id, name: customer_name}, tableId: null, currency:state.currency, storeSettings: state.storeSettings, printSettings:state.printSettings,
+          itemsTotal: subtotal,
+          taxTotal: taxTotal,
+          payableTotal: total, 
+          tokenNo: null,
+          orderId: orderIds
+        });
 
-            const orders = [];
-            const orderIds = orderIdsArr.join(", ");
-
-            for (const o of ordersArr) {
-              const items = o.items;
-              items.forEach((i)=>{
-                const variant = i.variant_id ? {
-                    id: i.variant_id,
-                    title: i.variant_title,
-                    price: i.variant_price
-                } : null;
-                orders.push({
-                  ...i,
-                  title: i.item_title,
-                  addons_ids: i?.addons?.length > 0 ? i?.addons?.map((a)=>a.id):[],
-                  variant: variant
-                });
-              })
-            }
-
-            const {customer_id, customer_type, customer_name, delivery_type} = ordersArr;
-
-            setDetailsForReceiptPrint({
-              cartItems: orders, deliveryType:delivery_type, customerType:customer_type, customer:{id: customer_id, name: customer_name}, tableId: null, currency:state.currency, storeSettings: state.storeSettings, printSettings:state.printSettings,
-              itemsTotal: subtotal,
-              taxTotal: taxTotal,
-              payableTotal: total, 
-              tokenNo: null,
-              orderId: orderIds
-            });
-
-            const receiptWindow = window.open("/print-receipt", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
-            receiptWindow.onload = () => {
-              setTimeout(()=>{
-                receiptWindow.print();
-              },400)
-            }
-            
-          }
-        } catch (error) {
-          const message = error?.response?.data?.message || "Error processing your request, Please try later!";
-          toast.dismiss();
-          console.error(error);
-          toast.error(message);
+        const receiptWindow = window.open("/print-receipt", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400");
+        receiptWindow.onload = (e) => {
+          setTimeout(()=>{
+            receiptWindow.print();
+          },400)
         }
-      };
+        
+      }
+    } catch (error) {
+      const message = error?.response?.data?.message || "Error processing your request, Please try later!";
+      toast.dismiss();
+      console.error(error);
+      toast.error(message);
+    }
+  };
 
-      return (
-        <Page>
-          <div className="flex flex-wrap gap-4 flex-col md:flex-row md:items-center md:justify-between">
-            <h3 className="text-2xl">Invoices</h3>
+  return (
+    <Page>
+      <div className="flex flex-wrap gap-4 flex-col md:flex-row md:items-center md:justify-between">
+        <h3 className="text-2xl">Invoices</h3>
 
-            <div className="flex flex-wrap gap-2">
-              <div className="bg-gray-100 px-2 py-1 rounded-lg flex items-center">
-                <input
-                  ref={searchRef}
-                  defaultValue={state.search}
-                  type="text"
-                  placeholder="Search Invoices"
-                  className="bg-transparent placeholder:text-gray-400 outline-none block"
-                />
-                {state.search && (
-                  <button onClick={btnClearSearch} className="text-gray-400">
-                    <IconX stroke={iconStroke} size={18} />
-                  </button>
-                )}
-              </div>
-              <button
-                onClick={btnSearch}
-                className="text-resolute-text bg-resolute-primary transition hover:bg-amber-500 active:scale-95 rounded-lg px-4 py-1 outline-resolute-border-light"
-              >
-                Search
+        <div className="flex flex-wrap gap-2">
+          <div className="bg-gray-100 px-2 py-1 rounded-lg flex items-center">
+            <input
+              ref={searchRef}
+              defaultValue={state.search}
+              type="text"
+              placeholder="Search Invoices"
+              className="bg-transparent placeholder:text-gray-400 outline-none block"
+            />
+            {state.search && (
+              <button onClick={btnClearSearch} className="text-gray-400">
+                <IconX stroke={iconStroke} size={18} />
               </button>
-              <button
-                onClick={() => document.getElementById("filter-dialog").showModal()}
-                className="w-8 h-8 flex items-center justify-center text-gray-500 rounded-full hover:bg-gray-100 active:scale-95 transition"
-              >
-                <IconFilter />
-              </button>
-            </div>
+            )}
           </div>
+          <button
+            onClick={btnSearch}
+            className="text-resolute-text bg-resolute-primary transition hover:bg-amber-500 active:scale-95 rounded-lg px-4 py-1 outline-resolute-border-light"
+          >
+            Search
+          </button>
+          <button
+            onClick={() => document.getElementById("filter-dialog").showModal()}
+            className="w-8 h-8 flex items-center justify-center text-gray-500 rounded-full hover:bg-gray-100 active:scale-95 transition"
+          >
+            <IconFilter />
+          </button>
+        </div>
+      </div>
 
-          {/* search result */}
-          {state.searchResults.length > 0 && <div className="mt-6">
-            <h3>Showing Search Result for "{state.search}"</h3>
-            <div className="overflow-x-auto w-full">
-              <table className="table table-sm table-zebra border w-full">
-                <thead>
-                  <tr>
-                    <th>Invoice ID:</th>
-                    <th>Order IDs</th>
-                    <th>Tokens</th>
-                    <th>Date</th>
-                    <th>Subtotal</th>
-                    <th>Tax</th>
-                    <th>Total</th>
-                    <th>Delivery Type</th>
-                    <th>Customer</th>
-                    <th>Table</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {state.searchResults.map((invoice, index)=>{
-                    const { 
-                      invoice_id,
-                      created_at,
-                      sub_total,
-                      tax_total,
-                      total,
-                      table_id,
-                      table_title,
-                      floor,
-                      delivery_type,
-                      customer_id,
-                      name,
-                      orders,
-                    } = invoice;
+      {/* search result */}
+      {state.searchResults.length > 0 && <div className="mt-6">
+        <h3>Showing Search Result for "{state.search}"</h3>
+        <div className="overflow-x-auto w-full">
+          <table className="table table-sm table-zebra border w-full">
+            <thead>
+              <tr>
+                <th>Invoice ID:</th>
+                <th>Order IDs</th>
+                <th>Tokens</th>
+                <th>Date</th>
+                <th>Subtotal</th>
+                <th>Tax</th>
+                <th>Total</th>
+                <th>Delivery Type</th>
+                <th>Customer</th>
+                <th>Table</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {state.searchResults.map((invoice, index)=>{
+                const { 
+                  invoice_id,
+                  created_at,
+                  sub_total,
+                  tax_total,
+                  total,
+                  table_id,
+                  table_title,
+                  floor,
+                  delivery_type,
+                  customer_type,
+                  customer_id,
+                  name,
+                  email,
+                  orders,
+                } = invoice;
 
-                    const orderIdsArr = orders.map(o=>o.order_id);
-                    const orderIds = orderIdsArr.join(", ")
-                    const tokens = orderIdsArr.join(", ");
+                const orderIdsArr = orders.map(o=>o.order_id);
+                const orderIds = orderIdsArr.join(", ")
+                const tokens = orderIdsArr.join(", ");
 
-                    return <tr key={index}>
-                      <td>{invoice_id}</td>
-                      <td>{orderIds}</td>
-                      <td>{tokens}</td>
-                      <td>{new Intl.DateTimeFormat('en', {dateStyle: "medium", timeStyle: "short"}).format(new Date(created_at))}</td>
-                      <td>{state.currency}{sub_total}</td>
-                      <td>{state.currency}{tax_total}</td>
-                      <td className="font-bold">{state.currency}{total}</td>
-                      <td>{delivery_type?delivery_type:"N/A"}</td>
-                      <td>{customer_id ?<b>{name}-({customer_id})</b>:"WALKIN"}</td>
-                      <td>{table_id ? <b>{table_title}-{floor}</b>:"N/A"}</td>
-                      
-                      <td className="flex items-center gap-2">
-                        <button onClick={()=>{btnViewReceipt(orderIdsArr)}} className="btn btn-sm btn-circle text-slate-500">
+                return <tr key={index}>
+                  <td>{invoice_id}</td>
+                  <td>{orderIds}</td>
+                  <td>{tokens}</td>
+                  <td>{new Intl.DateTimeFormat('en', {dateStyle: "medium", timeStyle: "short"}).format(new Date(created_at))}</td>
+                  <td>{state.currency}{sub_total}</td>
+                  <td>{state.currency}{tax_total}</td>
+                  <td className="font-bold">{state.currency}{total}</td>
+                  <td>{delivery_type?delivery_type:"N/A"}</td>
+                  <td>{customer_id ?<b>{name}-({customer_id})</b>:"WALKIN"}</td>
+                  <td>{table_id ? <b>{table_title}-{floor}</b>:"N/A"}</td>
+                  
+                  <td className="flex items-center gap-2">
+                    <button onClick={()=>{btnViewReceipt(orderIdsArr)}} className="btn btn-sm btn-circle text-slate-500">
                       <IconReceipt stroke={iconStroke} />
                     </button>
                     <button onClick={()=>{btnPrintReceipt(orderIdsArr)}} className="btn btn-sm btn-circle text-slate-500">
@@ -452,8 +405,10 @@ export default function InvoicesPage() {
                   table_title,
                   floor,
                   delivery_type,
+                  customer_type,
                   customer_id,
                   name,
+                  email,
                   orders,
                 } = invoice;
 
@@ -560,174 +515,6 @@ export default function InvoicesPage() {
         </div>
       </dialog>
       {/* filter dialog */}
-
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Invoices</h1>
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={() => {
-              mutate("/invoices");
-            }}
-            className="btn btn-primary"
-          >
-            Refresh
-          </button>
-          <button
-            onClick={() => {
-              setState({
-                ...state,
-                search: "",
-                searchResults: [],
-                spage: 1,
-              });
-            }}
-            className="btn btn-secondary"
-          >
-            Clear Search
-          </button>
-        </div>
-      </div>
-      <div className="mt-6">
-        <div className="flex items-center space-x-2">
-          <input
-            ref={searchRef}
-            type="text"
-            placeholder="Search by Invoice ID"
-            className="form-input"
-          />
-          <button onClick={btnSearch} className="btn btn-primary">
-            <IconSearch stroke={iconStroke} />
-          </button>
-        </div>
-      </div>
-      {state.search && (
-        <div className="mt-4">
-          <div className="flex items-center space-x-2">
-            <p className="text-sm">Search Results for: {state.search}</p>
-            <button
-              onClick={btnClearSearch}
-              className="btn btn-secondary"
-            >
-              <IconX stroke={iconStroke} />
-            </button>
-          </div>
-        </div>
-      )}
-
-      <div className="mt-6">
-        <div className="flex items-center space-x-2">
-          <label>Filter By:</label>
-          <select
-            ref={filterTypeRef}
-            onChange={(e) => {
-              const selectedFilter = e.target.value;
-              setState({
-                ...state,
-                filter: selectedFilter,
-              });
-            }}
-            className="form-select"
-          >
-            {filters.map((f) => (
-              <option key={f.key} value={f.key}>
-                {f.value}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-      {state.filter === "custom" && (
-        <div className="mt-4">
-          <div className="flex items-center space-x-2">
-            <label>From:</label>
-            <input
-              ref={fromDateRef}
-              type="date"
-              defaultValue={defaultDateFrom}
-              className="form-input"
-            />
-            <label>To:</label>
-            <input
-              ref={toDateRef}
-              type="date"
-              defaultValue={defaultDateTo}
-              className="form-input"
-            />
-          </div>
-        </div>
-      )}
-      <div className="mt-6">
-        <div className="flex items-center space-x-2">
-          <label>Customer:</label>
-          <input
-            ref={customerSearchRef}
-            type="text"
-            placeholder="Search by Customer Name"
-            className="form-input"
-          />
-        </div>
-      </div>
-      <div className="mt-6">
-        <div className="flex items-center space-x-2">
-          <button
-            className="btn btn-primary"
-            onClick={() => {
-              const searchQuery = customerSearchRef.current.value;
-              if (!new String(searchQuery).trim()) {
-                return;
-              }
-
-              setState({
-                ...state,
-                customer: searchQuery,
-              });
-            }}
-          >
-            Search
-          </button>
-          <button
-            className="btn btn-secondary"
-            onClick={() => {
-              customerSearchRef.current.value = null;
-              setState({
-                ...state,
-                customer: null,
-              });
-            }}
-          >
-            Clear
-          </button>
-        </div>
-      </div>
-      <div className="mt-6">
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={() => {
-              const orderIds = state.searchResults.map((r) => r.id);
-              btnPrintStatement(orderIds);
-            }}
-            className="btn btn-primary"
-          >
-            <IconDownload stroke={iconStroke} />
-            <span>Download Statement</span>
-          </button>
-        </div>
-      </div>
-
-      <div className="mt-6">
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={() => {
-              const orderIds = state.searchResults.map((r) => r.id);
-              btnPrintInvoices(orderIds);
-            }}
-            className="btn btn-primary"
-          >
-            <IconDownload stroke={iconStroke} />
-            <span>Download Invoices</span>
-          </button>
-        </div>
-      </div>
     </Page>
   )
-};
+}
