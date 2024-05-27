@@ -17,27 +17,16 @@ const CashRegisterModal = ({ total, currency, onTransactionComplete, onClose }) 
 
   const handleAmountChange = (value) => {
     if (value === "." && amountReceived.includes(".")) return;
-    if (typeof value !== "string") {
-      throw new Error("Amount change value must be a string");
-    }
     const newAmount = amountReceived + value;
-    if (newAmount === null) {
-      throw new Error("Amount change value cannot be null");
+    if (newAmount === null || isNaN(parseFloat(newAmount))) {
+      throw new Error("Amount change value cannot be null or invalid number");
     }
     if (value === "submit") {
-      const numericValue = parseFloat(newAmount);
-      if (isNaN(numericValue)) {
-        throw new Error("Amount change value is not a valid number");
-      }
-      setChange(numericValue - total);
+      setChange(parseFloat(newAmount) - total);
       handleTransactionComplete();
     } else {
       setAmountReceived(newAmount);
-      const numericValue = parseFloat(newAmount);
-      if (isNaN(numericValue)) {
-        throw new Error("Amount change value is not a valid number");
-      }
-      setChange(numericValue - total);
+      setChange(parseFloat(newAmount) - total);
     }
   };
 

@@ -13,8 +13,9 @@ exports.addTransactionDB = async (total, amountReceived, change, paymentMethod) 
         INSERT INTO transactions (total, amount_received, change, payment_method)
         VALUES (?, ?, ?, ?);
         `;
-
+        console.log("Adding transaction to database");
         const [result] = await conn.query(sql, [total, amountReceived, change, paymentMethod]);
+        console.log(`Transaction added successfully with id ${result.insertId}`);
         return result.insertId;
     } catch (error) {
         console.error(error);
