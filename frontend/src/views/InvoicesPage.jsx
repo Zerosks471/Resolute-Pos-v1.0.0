@@ -265,19 +265,40 @@ export default function InvoicesPage() {
       const selectedRows = rows.filter(row => row?.selected === true);
       const selectedRowsData = selectedRows.map(row => row?.data || {});
 
-      const outline = selectedRowsData.map(row => {
+      const tableData = selectedRowsData.map(row => {
         const {date, customer_name, payable_total, order_ids} = row;
-        return [date, customer_name, payable_total, order_ids?.join(', ')]
-      }).join('\n')
+        return {
+          date,
+          customer_name,
+          payable_total,
+          order_ids: order_ids?.join(', ')
+        }
+      });
 
-      const csvContent = "data:text/csv;charset=utf-8," + encodeURI(outline);
-      const a = document.createElement('a');
-      a.href = csvContent;
-      a.setAttribute('download', 'statements.csv');
-      a.click();
+      const pdfDoc = new jsPDF();
+      const tableRows = tableData.map(row => [row.date, row.customer_name, row.payable_total, row.order_ids]);
+      pdfDoc.autoTable({
+        body: tableRows,
+        columns: [
+          { header: 'Date' },
+          { header: 'Customer Name' },
+          { header: 'Payable Total' },
+          { header: 'Order Ids' },
+        ],
+        theme: 'grid',
+        startY: 20,
+      });
+
+      const pdfBytes = pdfDoc.output();
+      const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'statements.pdf');
+      link.click();
+      URL.revokeObjectURL(url);
     } catch (error) {
-      console.error(error);
-      toast.error("Error downloading statements, Please try later!");
+      toast.error(error?.message || "Error downloading statements, Please try later!");
     }
   }
   
