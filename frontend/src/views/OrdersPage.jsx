@@ -29,6 +29,7 @@ import { SocketContext } from "../contexts/SocketContext";
 import { initSocket } from "../utils/socket";
 import { textToSpeech } from "../utils/textToSpeech";
 import CashRegisterModal from "../components/CashRegisterModal"; // Import the Cash Register Modal component
+import handleTransactionComplete from "../components/CashRegisterModal";
 
 export default function OrdersPage() {
   const printReceiptRef = useRef();
@@ -283,9 +284,16 @@ export default function OrdersPage() {
   };
 
   const handleTransactionComplete = (transactionDetails) => {
-    setDetailsForReceiptPrint(transactionDetails);
-    setState({ ...state, showCashRegister: false });
-    refreshOrders();
+    try {
+      if (transactionDetails == null) {
+        throw new Error("Transaction Details cannot be null");
+      }
+      setDetailsForReceiptPrint(transactionDetails);
+      setState((prevState) => ({ ...prevState, showCashRegister: false }));
+      refreshOrders();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

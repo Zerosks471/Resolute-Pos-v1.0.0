@@ -1,20 +1,24 @@
 const { getMySqlPromiseConnection } = require("../config/mysql.db");
 
 // Function to add a transaction
-exports.addTransactionDB = async (total, amountReceived, paymentMethod, uniqueCode) => {
-    const conn = await getMySqlPromiseConnection().getConnection();
+// transactions.service.js
+
+// transactions.service.js
+
+exports.addTransactionDB = async (total, amountReceived, change, paymentMethod) => {
+    const conn = getMySqlPromiseConnection();
+
     try {
         const sql = `
-        INSERT INTO transactions (total, amount_received, payment_method, unique_code)
+        INSERT INTO transactions (total, amount_received, change, payment_method)
         VALUES (?, ?, ?, ?);
         `;
-        const [result] = await conn.query(sql, [total, amountReceived, paymentMethod, uniqueCode]);
+
+        const [result] = await conn.query(sql, [total, amountReceived, change, paymentMethod]);
         return result.insertId;
     } catch (error) {
         console.error(error);
         throw error;
-    } finally {
-        conn.release();
     }
 };
 

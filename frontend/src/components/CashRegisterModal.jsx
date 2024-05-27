@@ -1,12 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate instead of useHistory
 import { toast } from "react-hot-toast";
-import { 
-  saveTransaction, 
-  getTransaction, 
-  updateTransaction, 
-  deleteTransaction 
-} from "../controllers/transactions.controller";
-import NumberPad from "./NumberPad"; // Import NumberPad component
+import apiClient from "../helpers/ApiClient.js";
+import NumberPad from "./NumberPad";
 
 const CashRegisterModal = ({ total, currency, onTransactionComplete, onClose }) => {
   total = total || 0;
@@ -17,14 +13,32 @@ const CashRegisterModal = ({ total, currency, onTransactionComplete, onClose }) 
   const [amountReceived, setAmountReceived] = useState("");
   const [change, setChange] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("cash");
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   const handleAmountChange = (value) => {
-    if (value === "." && amountReceived.includes(".")) return; // Prevent multiple decimal points
-
+    if (value === "." && amountReceived.includes(".")) return;
+    if (typeof value !== "string") {
+      throw new Error("Amount change value must be a string");
+    }
     const newAmount = amountReceived + value;
-    setAmountReceived(newAmount);
-    const numericValue = parseFloat(newAmount);
-    setChange(numericValue - total);
+    if (newAmount === null) {
+      throw new Error("Amount change value cannot be null");
+    }
+    if (value === "submit") {
+      const numericValue = parseFloat(newAmount);
+      if (isNaN(numericValue)) {
+        throw new Error("Amount change value is not a valid number");
+      }
+      setChange(numericValue - total);
+      handleTransactionComplete();
+    } else {
+      setAmountReceived(newAmount);
+      const numericValue = parseFloat(newAmount);
+      if (isNaN(numericValue)) {
+        throw new Error("Amount change value is not a valid number");
+      }
+      setChange(numericValue - total);
+    }
   };
 
   const handleClear = () => {
@@ -45,38 +59,23 @@ const CashRegisterModal = ({ total, currency, onTransactionComplete, onClose }) 
 
   const handleTransactionComplete = async () => {
     try {
-      const response = await saveTransaction({
+      const transactionDetails = {
         total,
         amountReceived: paymentMethod === "cash" ? parseFloat(amountReceived) : total,
         change: paymentMethod === "cash" ? change : 0,
         paymentMethod,
-      });
+      };
+  
+      const response = await apiClient.post('/transactions', transactionDetails);
+  
       if (response && response.status === 200) {
         toast.success("Transaction successful!");
-        onTransactionComplete && onTransactionComplete({
-          total,
-          amountReceived: paymentMethod === "cash" ? parseFloat(amountReceived) : total,
-          change: paymentMethod === "cash" ? change : 0,
-          paymentMethod,
-        });
+        onTransactionComplete && onTransactionComplete(transactionDetails);
         onClose && onClose();
-      } else if (response && response.status === 400) {
-        toast.error("Transaction failed. Please try again.");
-      } else if (response && response.status === 401) {
-        const responseJSON = await response.json();
-        if (responseJSON.message === "No authorization token provided") {
-          const responseMessage = await updateTransaction(responseJSON.id);
-          if (responseMessage && responseMessage.status === 200) {
-            toast.success("Transaction deleted.");
-          } else {
-            toast.error("Transaction failed. Please try again.");
-          }
-        } else {
-          toast.error("Transaction failed. Please try again.");
-        }
+        navigate("/success-page"); // Replace with your success route
       }
     } catch (error) {
-      console.error(error);
+      console.error('Transaction failed:', error);
       toast.error("Transaction failed. Please try again.");
     }
   };
@@ -88,7 +87,6 @@ const CashRegisterModal = ({ total, currency, onTransactionComplete, onClose }) 
       toast.error("Invalid amount received");
       return;
     }
-
     handleTransactionComplete();
   };
 

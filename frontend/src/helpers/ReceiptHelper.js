@@ -7,3 +7,7 @@ export function getDetailsForReceiptPrint() {
 export function setDetailsForReceiptPrint(details) {
     localStorage.setItem(RECEIPT_KEY, JSON.stringify(details));
 }
+
+export const handleTransactionComplete = (transactionDetails) => {
+    console.log("Transaction completed successfully", transactionDetails);
+};

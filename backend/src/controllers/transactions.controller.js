@@ -26,27 +26,18 @@ exports.getTransactions = async (req, res) => {
 };
 
 // Add a new transaction
+// transactions.controller.js
+
 exports.addTransaction = async (req, res) => {
     try {
-        const { total, amountReceived, paymentMethod } = req.body;
-
-        if (!(total && amountReceived && paymentMethod)) {
-            return res.status(400).json({
-                success: false,
-                message: "Please provide required details: Total, Amount Received, Payment Method!"
-            });
-        }
-
-        const uniqueCode = nanoid(10);
-        const transactionId = await addTransactionDB(total, amountReceived, paymentMethod, uniqueCode);
+        const { total, amountReceived, change, paymentMethod } = req.body;
+        const transactionId = await addTransactionDB(total, amountReceived, change, paymentMethod);
 
         return res.status(200).json({
             success: true,
-            message: "Transaction Added.",
-            transactionId,
-            uniqueCode
+            message: "Transaction added successfully.",
+            transactionId
         });
-
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -55,6 +46,7 @@ exports.addTransaction = async (req, res) => {
         });
     }
 };
+
 
 // Update a transaction
 exports.updateTransaction = async (req, res) => {
