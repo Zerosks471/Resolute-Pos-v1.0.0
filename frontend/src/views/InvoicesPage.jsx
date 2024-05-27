@@ -258,6 +258,24 @@ export default function InvoicesPage() {
     }
   };
 
+  // download statements
+  const btnDownloadstatements = () => {
+    try {
+      const rows = rowsRef.current?.rows || [];
+      const selectedRows = rows.filter(row => row?.selected === true);
+      const selectedRowsData = selectedRows.map(row => row?.data || {});
+      const csvContent = "data:text/csv;charset=utf-8," + encodeURI(selectedRowsData.map(e => Object.values(e)).join("\n"));
+      const a = document.createElement('a');
+      a.href = csvContent;
+      a.setAttribute('download', 'statements.csv');
+      a.click();
+    } catch (error) {
+      console.error(error);
+      toast.error("Error downloading statements, Please try later!");
+    }
+  }
+  
+
   return (
     <Page>
       <div className="flex flex-wrap gap-4 flex-col md:flex-row md:items-center md:justify-between">
@@ -283,6 +301,12 @@ export default function InvoicesPage() {
             className="text-resolute-text bg-resolute-primary transition hover:bg-amber-500 active:scale-95 rounded-lg px-4 py-1 outline-resolute-border-light"
           >
             Search
+          </button>
+          <button
+            onClick={btnDownloadstatements}
+            className="text-resolute-text bg-resolute-primary transition hover:bg-amber-500 active:scale-95 rounded-lg px-4 py-1 outline-resolute-border-light"
+          >
+            Download Statements
           </button>
           <button
             onClick={() => document.getElementById("filter-dialog").showModal()}
@@ -505,16 +529,19 @@ export default function InvoicesPage() {
               <button onClick={()=>{
                 setState({
                   ...state,
-                  filter: filterTypeRef.current.value,
-                  fromDate: fromDateRef.current.value || null,
-                  toDate: toDateRef.current.value || null,
+                  filter: filterTypeRef.current
+                    ? filterTypeRef.current.value
+                    : filters[0].key,
+                  fromDate: fromDateRef.current.value,
+                  toDate: toDateRef.current.value,
                 });
-              }} className="btn ml-2">Apply</button>
+                document.getElementById("filter-dialog").close();
+              }} className="btn btn-primary">Filter</button>  
             </form>
           </div>
         </div>
       </dialog>
       {/* filter dialog */}
     </Page>
-  )
+  );
 }
