@@ -2,7 +2,7 @@ const { getMySqlPromiseConnection } = require("../config/mysql.db");
 
 // Function to add a transaction
 exports.addTransactionDB = async (total, amountReceived, paymentMethod, uniqueCode) => {
-    const conn = await getMySqlPromiseConnection();
+    const conn = await getMySqlPromiseConnection().getConnection();
     try {
         const sql = `
         INSERT INTO transactions (total, amount_received, payment_method, unique_code)
@@ -13,12 +13,14 @@ exports.addTransactionDB = async (total, amountReceived, paymentMethod, uniqueCo
     } catch (error) {
         console.error(error);
         throw error;
+    } finally {
+        conn.release();
     }
 };
 
 // Function to update a transaction
 exports.updateTransactionDB = async (transactionId, total, amountReceived, paymentMethod) => {
-    const conn = await getMySqlPromiseConnection();
+    const conn = await getMySqlPromiseConnection().getConnection();
     try {
         const sql = `
         UPDATE transactions
@@ -30,12 +32,14 @@ exports.updateTransactionDB = async (transactionId, total, amountReceived, payme
     } catch (error) {
         console.error(error);
         throw error;
+    } finally {
+        conn.release();
     }
 };
 
 // Function to delete a transaction
 exports.deleteTransactionDB = async (transactionId) => {
-    const conn = await getMySqlPromiseConnection();
+    const conn = await getMySqlPromiseConnection().getConnection();
     try {
         const sql = `
         DELETE FROM transactions
@@ -46,12 +50,14 @@ exports.deleteTransactionDB = async (transactionId) => {
     } catch (error) {
         console.error(error);
         throw error;
+    } finally {
+        conn.release();
     }
 };
 
 // Function to get all transactions
 exports.getTransactionsDB = async () => {
-    const conn = await getMySqlPromiseConnection();
+    const conn = await getMySqlPromiseConnection().getConnection();
     try {
         const sql = `
         SELECT id, total, amount_received, payment_method, unique_code
@@ -62,12 +68,14 @@ exports.getTransactionsDB = async () => {
     } catch (error) {
         console.error(error);
         throw error;
+    } finally {
+        conn.release();
     }
 };
 
 // Function to search for transactions
 exports.searchTransactionsDB = async (searchString) => {
-    const conn = await getMySqlPromiseConnection();
+    const conn = await getMySqlPromiseConnection().getConnection();
     try {
         const sql = `
         SELECT id, total, amount_received, payment_method, unique_code
@@ -79,5 +87,7 @@ exports.searchTransactionsDB = async (searchString) => {
     } catch (error) {
         console.error(error);
         throw error;
+    } finally {
+        conn.release();
     }
 };
