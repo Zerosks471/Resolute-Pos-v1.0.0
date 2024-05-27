@@ -23,6 +23,7 @@ const ordersRoutes = require("./routes/orders.routes")
 const invoiceRoutes = require("./routes/invoice.routes")
 const dashboardRoutes = require("./routes/dashboard.routes")
 const reportsRoutes = require("./routes/reports.routes")
+const transactionsRoutes = require("./routes/transactions.routes")
 // routes import
 
 
@@ -86,6 +87,7 @@ app.use("/api/v1/orders", ordersRoutes);
 app.use("/api/v1/invoices", invoiceRoutes);
 app.use("/api/v1/dashboard", dashboardRoutes);
 app.use("/api/v1/reports", reportsRoutes);
+app.use("/api/v1/transactions", transactionsRoutes);
 // routes
 
 app.get("/", (req, res)=>{

@@ -39,59 +39,29 @@ const CashRegisterModal = ({ total, currency, onTransactionComplete, onClose }) 
   };
 
   const handleTransactionComplete = async () => {
-    if (!total || total <= 0) {
-      toast.error("Invalid transaction total");
-      return;
-    }
-
-    if (!amountReceived || amountReceived <= 0) {
-      toast.error("Invalid amount received");
-      return;
-    }
-
-    if (!paymentMethod || paymentMethod === "cash") {
-      toast.error("Invalid payment method");
-      return;
-    }
-
-    const transactionDetails = {
-      total,
-      amountReceived: paymentMethod === "cash" ? parseFloat(amountReceived) : total,
-      change: paymentMethod === "cash" ? change : 0,
-      paymentMethod,
-    };
-
     try {
-      toast.loading("Processing transaction...");
-      const response = await saveTransaction(transactionDetails);
+      const response = await saveTransaction({
+        total,
+        amountReceived: paymentMethod === "cash" ? parseFloat(amountReceived) : total,
+        change: paymentMethod === "cash" ? change : 0,
+        paymentMethod,
+      });
       if (response && response.status === 200) {
-        toast.dismiss();
         toast.success("Transaction successful!");
-        onTransactionComplete && onTransactionComplete(transactionDetails);
+        onTransactionComplete && onTransactionComplete({
+          total,
+          amountReceived: paymentMethod === "cash" ? parseFloat(amountReceived) : total,
+          change: paymentMethod === "cash" ? change : 0,
+          paymentMethod,
+        });
         onClose && onClose();
-
-        // Open print receipt window
-        const receiptWindow = window.open(
-          "/print-receipt",
-          "_blank",
-          "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400"
-        );
-        if (receiptWindow) {
-          receiptWindow.onload = (e) => {
-            setTimeout(() => {
-              if (receiptWindow) {
-                receiptWindow.print();
-              }
-            }, 400);
-          };
-        }
       }
     } catch (error) {
       console.error(error);
-      toast.dismiss();
       toast.error("Transaction failed. Please try again.");
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const numericValue = parseFloat(amountReceived);

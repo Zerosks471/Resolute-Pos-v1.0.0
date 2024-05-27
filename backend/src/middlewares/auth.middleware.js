@@ -1,127 +1,115 @@
 const { getUserDB } = require("../services/user.service");
-const { verifyToken } = require("../utils/jwt")
+const { verifyToken } = require("../utils/jwt");
 const { ROLES } = require("../config/user.config");
 
 exports.isLoggedIn = (req, res, next) => {
-    let token;
+  let token;
 
-    if(req.cookies.accessToken || 
-        (req.headers.authorization && req.headers.authorization.startsWith('Bearer'))
-    ) {
-        token = req.cookies.accessToken || req.headers.authorization.split(" ")[1];
-    }
+  if (req.cookies.accessToken || (req.headers.authorization && req.headers.authorization.startsWith('Bearer'))) {
+    token = req.cookies.accessToken || req.headers.authorization.split(" ")[1];
+  }
 
-    if(!token) {
-        return res.status(401).json({
-            success: false,
-            message: "Login to access this area!"
-        });
-    }
-    req.token = token;
-    next();
-} 
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "Login to access this area!"
+    });
+  }
+  req.token = token;
+  next();
+}
 
 exports.isAuthenticated = (req, res, next) => {
-    const accessToken = req.token;
-    
-    try {
-        const decodedToken = verifyToken(accessToken);
-        req.user = decodedToken;
-        next();
-    } catch (error) {
-        console.error(error);
-        return res.status(401).json({
-            success: false,
-            message: "Unauthorized access!"
-        });
-    }
-} 
+  const accessToken = req.token;
+
+  try {
+    const decodedToken = verifyToken(accessToken);
+    req.user = decodedToken;
+    next();
+  } catch (error) {
+    console.error(error);
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized access!"
+    });
+  }
+}
 
 exports.hasRefreshToken = (req, res, next) => {
-    let token;
+  let token;
 
-    if(req.cookies.refreshToken) {
-        token = req.cookies.refreshToken;
-    }
+  if (req.cookies.refreshToken) {
+    token = req.cookies.refreshToken;
+  }
 
-    if(!token) {
-        return res.status(401).json({
-            success: false,
-            message: "Login again to access this area!"
-        });
-    }
-    try {
-        const decodedToken = verifyToken(token);
-        req.user = decodedToken;
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "Login again to access this area!"
+    });
+  }
+  try {
+    const decodedToken = verifyToken(token);
+    req.user = decodedToken;
 
-        next();
-    } catch (error) {
-        console.error(error);
+    next();
+  } catch (error) {
+    console.error(error);
 
-        res.clearCookie('accessToken');
-        res.clearCookie('refreshToken');
-        res.clearCookie('resolutepos__authenticated');
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    res.clearCookie('resolutepos__authenticated');
 
-        return res.status(401).json({
-            success: false,
-            message: "Unauthorized access!"
-        });
-    }
-} 
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized access!"
+    });
+  }
+}
 
 exports.authorize = (requiredScopes) => {
-    return async (req, res, next) => {
-        try {
-            const {username, scope: userScopes} = req.user;
-        
-            const user = await getUserDB(username);
+  return async (req, res, next) => {
+    try {
+      const { username, scope: userScopes } = req.user;
 
-            if(!user) {
-                return res.status(401).json({
-                    success: false, 
-                    message: "Access denied!"
-                });
-            }
+      const user = await getUserDB(username);
 
-            if(user.role == ROLES.ADMIN) {
-                return next();
-            }
+      if (!user) {
+        return res.status(401).json({
+          success: false,
+          message: "Access denied!"
+        });
+      }
 
-            if(user.scope != userScopes) {
-                return res.status(403).json({
-                    success: false, 
-                    message: "Forbidden! Access Denied!"
-                });
-            }
+      if (user.role == ROLES.ADMIN) {
+        return next();
+      }
 
-            const userScopesArr = user?.scope?.split(",")?.map(s=>s.trim());
+      if (user.scope != userScopes) {
+        return res.status(403).json({
+          success: false,
+          message: "Forbidden! Access Denied!"
+        });
+      }
 
-            const isOperationAllowed = requiredScopes.some((scope)=>userScopesArr.includes(scope));
+      const userScopesArr = user?.scope?.split(",")?.map(s => s.trim());
 
-            // let isOperationAllowed = false;
+      const isOperationAllowed = requiredScopes.some((scope) => userScopesArr.includes(scope));
 
-            // for (const requiredScope of requiredScopes) {
-            //     const isAllowed = userScopesArr.includes(requiredScope);
-            //     if(isAllowed) {
-            //         isOperationAllowed = true;
-            //         break;
-            //     }
-            // }
+      if (!isOperationAllowed) {
+        return res.status(403).json({
+          success: false,
+          message: "Forbidden! Access Denied!"
+        });
+      }
+      next();
 
-            if(!isOperationAllowed) {
-                return res.status(403).json({
-                    success: false, 
-                    message: "Forbidden! Access Denied!"
-                });
-            }
-            next();
-
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({
-                success: false,
-                message: "Something went wrong! try later!"
-            });
-        }
-    };
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        success: false,
+        message: "Something went wrong! try later!"
+      });
+    }
+  };
 }
