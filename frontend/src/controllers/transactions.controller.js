@@ -28,4 +28,3 @@ export const updateTransaction = async (id, transaction) =>
     console.error("Error updating transaction:", error);
     throw error;
   });
-  

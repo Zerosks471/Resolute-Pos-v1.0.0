@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
-import { saveTransaction } from "../controllers/transactions.controller";
+import { 
+  saveTransaction, 
+  getTransaction, 
+  updateTransaction, 
+  deleteTransaction 
+} from "../controllers/transactions.controller";
 import NumberPad from "./NumberPad"; // Import NumberPad component
 
 const CashRegisterModal = ({ total, currency, onTransactionComplete, onClose }) => {
@@ -55,6 +60,20 @@ const CashRegisterModal = ({ total, currency, onTransactionComplete, onClose }) 
           paymentMethod,
         });
         onClose && onClose();
+      } else if (response && response.status === 400) {
+        toast.error("Transaction failed. Please try again.");
+      } else if (response && response.status === 401) {
+        const responseJSON = await response.json();
+        if (responseJSON.message === "No authorization token provided") {
+          const responseMessage = await updateTransaction(responseJSON.id);
+          if (responseMessage && responseMessage.status === 200) {
+            toast.success("Transaction deleted.");
+          } else {
+            toast.error("Transaction failed. Please try again.");
+          }
+        } else {
+          toast.error("Transaction failed. Please try again.");
+        }
       }
     } catch (error) {
       console.error(error);
