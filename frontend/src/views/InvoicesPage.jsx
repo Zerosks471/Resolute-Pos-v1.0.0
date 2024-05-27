@@ -259,12 +259,13 @@ export default function InvoicesPage() {
   };
 
   // download statements
-  const btnDownloadstatements = () => {
+
+  const btnDownloadSelectedInvoices = async () => {
     try {
       const rows = rowsRef.current?.rows || [];
       const selectedRows = rows.filter(row => row?.selected === true);
       const selectedRowsData = selectedRows.map(row => row?.data || {});
-
+  
       const tableData = selectedRowsData.map(row => {
         const {date, customer_name, payable_total, order_ids, order_type, order_status, payment_type} = row;
         return {
@@ -277,7 +278,7 @@ export default function InvoicesPage() {
           payment_type
         }
       });
-
+  
       const pdfDoc = new jsPDF();
       const tableRows = tableData.map(row => [row.date, row.customer_name, row.payable_total, row.order_ids, row.order_type, row.order_status, row.payment_type]);
       pdfDoc.autoTable({
@@ -294,19 +295,20 @@ export default function InvoicesPage() {
         theme: 'grid',
         startY: 20,
       });
-
+  
       const pdfBytes = pdfDoc.output();
       const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = URL.createObjectURL(pdfBlob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'statements.pdf');
+      link.setAttribute('download', 'selected_invoices.pdf');
       link.click();
       URL.revokeObjectURL(url);
     } catch (error) {
-      toast.error(error?.message || "Error downloading statements, Please try later!");
+      toast.error(error?.message || "Error downloading selected invoices, Please try later!");
     }
   }
+  
   
 
   return (
@@ -336,7 +338,7 @@ export default function InvoicesPage() {
             Search
           </button>
           <button
-            onClick={btnDownloadstatements}
+            onClick={btnDownloadSelectedInvoices}
             className="text-resolute-text bg-resolute-primary transition hover:bg-amber-500 active:scale-95 rounded-lg px-4 py-1 outline-resolute-border-light"
           >
             Download Statements
