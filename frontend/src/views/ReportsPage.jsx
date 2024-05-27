@@ -114,11 +114,23 @@ export default function ReportsPage() {
   const currency = CURRENCIES.find((c) => c.cc == currencyCode)?.symbol;
 
   // Function to handle the download statement button click
+  // This function creates a new anchor tag, sets its href to the APIURL and
+  // sets its download attribute to "statement.xlsx". It also sets the
+  // rel attribute to "noopener" to avoid the error in Safari and
+  // sets the target attribute to "_blank" to open the link in a new
+  // tab. Finally, it calls the click method on the anchor tag to
+  // download the statement.
   const handleDownloadStatement = () => {
     try {
+      if (!APIURL) {
+        throw new Error("API URL is null or undefined.");
+      }
+
       const link = document.createElement("a");
       link.href = APIURL;
       link.setAttribute("download", "statement.xlsx");
+      link.setAttribute("rel", "noopener"); // TODO: Add this attribute to avoid the error in Safari
+      link.setAttribute("target", "_blank");
       link.click();
     } catch (error) {
       console.error(error);
