@@ -1,9 +1,52 @@
 import React, { useRef, useState } from "react";
 import Page from "../components/Page";
-import { IconFilter } from "@tabler/icons-react";
+import { IconFilter, IconDownload } from "@tabler/icons-react"; // Import the IconDownload component
 import { iconStroke } from "../config/config";
-import { useReports } from "../controllers/reports.controller"
+import { useReports } from "../controllers/reports.controller";
 import { CURRENCIES } from "../config/currencies.config";
+import CashRegisterModal from "../components/CashRegisterModal";
+import NumberPad from "../components/NumberPad";
+import { setDetailsForReceiptPrint } from "../helpers/ReceiptHelper";
+
+const initFilters = {
+  filter: "today",
+  fromDate: null,
+  toDate: null,
+};
+
+const initState = {
+  ordersCount: 0,
+  newCustomers: 0,
+  repeatedCustomers: 0,
+  currency: "USD",
+  averageOrderValue: 0,
+  totalCustomers: 0,
+  netRevenue: 0,
+  taxTotal: 0,
+  revenueTotal: 0,
+};
+
+const currency = CURRENCIES[0];
+
+async function _init() {
+  try {
+    const data = await useReports(initFilters);
+    return data;
+  } catch (error) {
+    console.error("Error fetching reports data:", error);
+    return initState;
+  }
+}
+
+async function _fetch() {
+  try {
+    const data = await useReports(initFilters);
+    return data;
+  } catch (error) {
+    console.error("Error fetching reports data:", error);
+    return initState;
+  }
+}
 
 export default function ReportsPage() {
   const filters = [
@@ -33,30 +76,56 @@ export default function ReportsPage() {
     toDate: null,
   });
 
-  const {APIURL, data, error, isLoading} = useReports({
+  const { APIURL, data, error, isLoading } = useReports({
     type: state.filter,
     from: state.fromDate,
     to: state.toDate,
   });
 
-  if(isLoading) {
-    return <Page>
-      Please wait...
-    </Page>
+  if (isLoading) {
+    return (
+      <Page>
+        Please wait...
+      </Page>
+    );
   }
 
-  if(error) {
+  if (error) {
     console.error(error);
-    return <Page>
-      Error Loading Reports Data, Please try later!
-    </Page>;
+    return (
+      <Page>
+        Error Loading Reports Data, Please try later!
+      </Page>
+    );
   }
 
   const {
-    ordersCount, newCustomers, repeatedCustomers, currency:currencyCode, averageOrderValue, totalCustomers, netRevenue, taxTotal, revenueTotal
+    ordersCount,
+    newCustomers,
+    repeatedCustomers,
+    currency: currencyCode,
+    averageOrderValue,
+    totalCustomers,
+    netRevenue,
+    taxTotal,
+    revenueTotal,
   } = data;
 
-  const currency = CURRENCIES.find((c)=>c.cc==currencyCode)?.symbol;
+  const currency = CURRENCIES.find((c) => c.cc == currencyCode)?.symbol;
+
+  // Function to handle the download statement button click
+  const handleDownloadStatement = () => {
+    try {
+      const link = document.createElement("a");
+      link.href = APIURL;
+      link.setAttribute("download", "statement.xlsx");
+      link.click();
+    } catch (error) {
+      console.error(error);
+      toast.dismiss();
+      toast.error("An error occurred while downloading statement. Please try again later.");
+    }
+  };
 
   return (
     <Page>
@@ -71,7 +140,7 @@ export default function ReportsPage() {
         </button>
       </div>
 
-      <h3 className="mt-6 mb-4 text-base">Showing Data for {filters.find(f=>f.key==state.filter).value}</h3>
+      <h3 className="mt-6 mb-4 text-base">Showing Data for {filters.find((f) => f.key == state.filter).value}</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
         {/* items sold */}
@@ -207,6 +276,15 @@ export default function ReportsPage() {
         </div>
       </dialog>
       {/* filter dialog */}
+
+      {/* cash register modal */}
+      <button
+        onClick={handleDownloadStatement}
+        className="btn btn-sm rounded-full mt-6"
+      >
+        <IconDownload stroke={iconStroke} /> Download Statement
+      </button>
     </Page>
   );
+
 }

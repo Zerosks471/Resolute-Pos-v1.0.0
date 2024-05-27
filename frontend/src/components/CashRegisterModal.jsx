@@ -4,6 +4,11 @@ import { saveTransaction } from "../controllers/transactions.controller";
 import NumberPad from "./NumberPad"; // Import NumberPad component
 
 const CashRegisterModal = ({ total, currency, onTransactionComplete, onClose }) => {
+  total = total || 0;
+  currency = currency || "";
+  onTransactionComplete = onTransactionComplete || (() => {});
+  onClose = onClose || (() => {});
+
   const [amountReceived, setAmountReceived] = useState("");
   const [change, setChange] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("cash");
@@ -59,11 +64,11 @@ const CashRegisterModal = ({ total, currency, onTransactionComplete, onClose }) 
     try {
       toast.loading("Processing transaction...");
       const response = await saveTransaction(transactionDetails);
-      if (response.status === 200) {
+      if (response && response.status === 200) {
         toast.dismiss();
         toast.success("Transaction successful!");
-        onTransactionComplete(transactionDetails);
-        onClose();
+        onTransactionComplete && onTransactionComplete(transactionDetails);
+        onClose && onClose();
 
         // Open print receipt window
         const receiptWindow = window.open(
@@ -87,8 +92,6 @@ const CashRegisterModal = ({ total, currency, onTransactionComplete, onClose }) 
       toast.error("Transaction failed. Please try again.");
     }
   };
-  
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const numericValue = parseFloat(amountReceived);
