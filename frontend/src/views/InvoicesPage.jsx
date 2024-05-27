@@ -264,7 +264,13 @@ export default function InvoicesPage() {
       const rows = rowsRef.current?.rows || [];
       const selectedRows = rows.filter(row => row?.selected === true);
       const selectedRowsData = selectedRows.map(row => row?.data || {});
-      const csvContent = "data:text/csv;charset=utf-8," + encodeURI(selectedRowsData.map(e => Object.values(e)).join("\n"));
+
+      const outline = selectedRowsData.map(row => {
+        const {date, customer_name, payable_total, order_ids} = row;
+        return [date, customer_name, payable_total, order_ids?.join(', ')]
+      }).join('\n')
+
+      const csvContent = "data:text/csv;charset=utf-8," + encodeURI(outline);
       const a = document.createElement('a');
       a.href = csvContent;
       a.setAttribute('download', 'statements.csv');
