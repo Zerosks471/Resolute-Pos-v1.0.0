@@ -266,17 +266,20 @@ export default function InvoicesPage() {
       const selectedRowsData = selectedRows.map(row => row?.data || {});
 
       const tableData = selectedRowsData.map(row => {
-        const {date, customer_name, payable_total, order_ids} = row;
+        const {date, customer_name, payable_total, order_ids, order_type, order_status, payment_type} = row;
         return {
           date,
           customer_name,
           payable_total,
-          order_ids: order_ids?.join(', ')
+          order_ids: order_ids?.join(', '),
+          order_type,
+          order_status,
+          payment_type
         }
       });
 
       const pdfDoc = new jsPDF();
-      const tableRows = tableData.map(row => [row.date, row.customer_name, row.payable_total, row.order_ids]);
+      const tableRows = tableData.map(row => [row.date, row.customer_name, row.payable_total, row.order_ids, row.order_type, row.order_status, row.payment_type]);
       pdfDoc.autoTable({
         body: tableRows,
         columns: [
@@ -284,6 +287,9 @@ export default function InvoicesPage() {
           { header: 'Customer Name' },
           { header: 'Payable Total' },
           { header: 'Order Ids' },
+          { header: 'Order Type' },
+          { header: 'Order Status' },
+          { header: 'Payment Type' },
         ],
         theme: 'grid',
         startY: 20,
