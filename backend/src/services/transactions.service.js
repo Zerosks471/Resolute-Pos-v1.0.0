@@ -1,17 +1,14 @@
 const { getMySqlPromiseConnection } = require("../config/mysql.db");
 
-// Function to add a transaction
-// transactions.service.js
-
-// transactions.service.js
-
 exports.addTransactionDB = async (total, amountReceived, change, paymentMethod) => {
     const conn = getMySqlPromiseConnection();
 
     try {
         const sql = `
-        INSERT INTO transactions (total, amount_received, change, payment_method)
-        VALUES (?, ?, ?, ?);
+        INSERT INTO transactions 
+        (total, amount_received, change, payment_method)
+        VALUES 
+        (?, ?, ?, ?);
         `;
         console.log("Adding transaction to database");
         const [result] = await conn.query(sql, [total, amountReceived, change, paymentMethod]);
@@ -29,7 +26,8 @@ exports.updateTransactionDB = async (transactionId, total, amountReceived, payme
     try {
         const sql = `
         UPDATE transactions
-        SET total = ?, amount_received = ?, payment_method = ?
+        SET 
+        total = ?, amount_received = ?, payment_method = ?
         WHERE id = ?;
         `;
         await conn.query(sql, [total, amountReceived, paymentMethod, transactionId]);
