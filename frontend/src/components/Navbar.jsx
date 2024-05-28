@@ -22,6 +22,7 @@ import { getUserDetailsInLocalStorage } from "../helpers/UserDetails";
 import { NavbarContext } from "../contexts/NavbarContext";
 import { toggleNavbar } from "../helpers/NavbarSettings";
 import { SCOPES } from "../config/scopes";
+import POSPage from "../views/POSPage";
 
 export default function Navbar() {
   const { pathname } = useLocation();
@@ -61,6 +62,25 @@ export default function Navbar() {
       scopes: [SCOPES.KITCHEN, SCOPES.KITCHEN_DISPLAY]
     },
 
+    {
+      type: "link",
+      text: "Custom POS",
+      icon: <IconDeviceIpadHorizontal stroke={iconStroke} />,
+      path: "/dashboard/POSSales",
+      scopes: [SCOPES.POS, SCOPES.ORDERS, SCOPES.ORDER_STATUS, SCOPES.ORDER_STATUS_DISPLAY]
+    },
+
+    {
+      type: "text",
+      text: "Inventory",
+    },
+    {
+      type: "link",
+      text: "Items",
+      icon: <IconChartArea stroke={iconStroke} />,
+      path: "/dashboard/items",
+      scopes: [SCOPES.ITEMS, SCOPES.VIEW_ITEMS, SCOPES.MANAGE_ITEMS]
+    },
     {
       type: "text",
       text: "Offerings",

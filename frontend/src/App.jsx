@@ -24,16 +24,16 @@ import DevicesPage from "./views/SettingsViews/DevicesPage";
 import ContactSupport from "./views/SettingsViews/ContactSupportPage";
 import CategoriesPage from "./views/SettingsViews/CategoriesPage";
 import MenuItemViewPage from "./views/SettingsViews/MenuItemViewPage";
-import { NavbarContext } from "./contexts/NavbarContext";
-import { getIsNavbarCollapsed } from "./helpers/NavbarSettings";
 import PrintReceiptPage from "./views/PrintReceiptPage";
 import PrintTokenPage from "./views/PrintTokenPage";
 import NoAccessPage from "./views/NoAccessPage";
 import ProfilePage from "./views/ProfilePage";
+import POSSales from "./components/POSSales";
+import { NavbarContext } from "./contexts/NavbarContext";
+import { getIsNavbarCollapsed } from "./helpers/NavbarSettings";
 import { SCOPES } from "./config/scopes";
 import ScopeProtectedRoute from "./helpers/ScopeProtectedRoute";
 import { SocketProvider } from "./contexts/SocketContext";
-import { handleTransactionComplete } from "./helpers/ReceiptHelper";
 
 export default function App() {
   const [isNavbarCollapsed, setIsNavbarCollapsed] = useState(getIsNavbarCollapsed());
@@ -76,7 +76,7 @@ export default function App() {
                 path="pos"
                 element={
                   <ScopeProtectedRoute scopes={[SCOPES.POS]}>
-                    <POSPage onTransactionComplete={handleTransactionComplete} />
+                    <POSPage />
                   </ScopeProtectedRoute>
                 }
               />
@@ -102,6 +102,27 @@ export default function App() {
                     scopes={[SCOPES.KITCHEN, SCOPES.KITCHEN_DISPLAY]}
                   >
                     <KitchenPage />
+                  </ScopeProtectedRoute>
+                }
+              />
+              <Route
+                path="CustomPOS"
+                element={
+                  <ScopeProtectedRoute
+                    scopes={[
+                      SCOPES.POS,
+                      SCOPES.ORDERS,
+                      SCOPES.ORDER_STATUS,
+                      SCOPES.ORDER_STATUS_DISPLAY,
+                      SCOPES.CUSTOMER_ORDERS,
+                      SCOPES.CUSTOMER_ORDERS_DISPLAY,
+                      SCOPES.CUSTOMER_ORDERS_PAYMENT,
+                      SCOPES.CUSTOMER_ORDERS_PAYMENT_DISPLAY,
+                      SCOPES.CUSTOMER_ORDERS_PAYMENT_PAY,
+                      SCOPES.CUSTOMER_ORDERS_PAYMENT_PAY_DISPLAY,
+                    ]}
+                  >
+                    <POSSales />
                   </ScopeProtectedRoute>
                 }
               />
