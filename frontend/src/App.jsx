@@ -28,7 +28,7 @@ import PrintReceiptPage from "./views/PrintReceiptPage";
 import PrintTokenPage from "./views/PrintTokenPage";
 import NoAccessPage from "./views/NoAccessPage";
 import ProfilePage from "./views/ProfilePage";
-import POSSales from "./components/POSSales";
+import POSSales from "./views/POSSales";
 import { NavbarContext } from "./contexts/NavbarContext";
 import { getIsNavbarCollapsed } from "./helpers/NavbarSettings";
 import { SCOPES } from "./config/scopes";
@@ -109,18 +109,7 @@ export default function App() {
                 path="CustomPOS"
                 element={
                   <ScopeProtectedRoute
-                    scopes={[
-                      SCOPES.POS,
-                      SCOPES.ORDERS,
-                      SCOPES.ORDER_STATUS,
-                      SCOPES.ORDER_STATUS_DISPLAY,
-                      SCOPES.CUSTOMER_ORDERS,
-                      SCOPES.CUSTOMER_ORDERS_DISPLAY,
-                      SCOPES.CUSTOMER_ORDERS_PAYMENT,
-                      SCOPES.CUSTOMER_ORDERS_PAYMENT_DISPLAY,
-                      SCOPES.CUSTOMER_ORDERS_PAYMENT_PAY,
-                      SCOPES.CUSTOMER_ORDERS_PAYMENT_PAY_DISPLAY,
-                    ]}
+                    scopes={[SCOPES.POS]}
                   >
                     <POSSales />
                   </ScopeProtectedRoute>

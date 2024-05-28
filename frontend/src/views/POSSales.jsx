@@ -1,24 +1,27 @@
-import NumberPad from "../components/NumberPad";
-import CashRegister from "../components/CashRegister";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import Page from "../components/Page";
+import { SocketContext } from "../contexts/SocketContext";
 import { saveTransaction } from "../controllers/transactions.controller";
-import { useState } from "react"; // Add the missing import statement for the useState hook
-
+import NumberPad from "../components/NumberPad";
+import CashRegister from "../components/CashRegister";
 
 const POSSales = ({ total, currency, onTransactionComplete }) => {
     const [amountReceived, setAmountReceived] = useState("");
     const [change, setChange] = useState(0);
     const [paymentMethod, setPaymentMethod] = useState("cash");
-    const navigate = useNavigate(); // Initialize useNavigate hook  to navigate to a different route
+    const navigate = useNavigate(); // Initialize useNavigate hook to navigate to a different route
+
+    useEffect(() => {
+        setChange(parseFloat(amountReceived) - total);
+    }, [amountReceived, total]);
 
     const handleAmountChange = (value) => {
         if (value === "." && amountReceived.includes(".")) return; // Prevent multiple decimal points
 
         const newAmount = amountReceived + value;
         setAmountReceived(newAmount);
-        const numericValue = parseFloat(newAmount);
-        setChange(numericValue - total);
     };
 
     const handleClear = () => {
@@ -29,8 +32,6 @@ const POSSales = ({ total, currency, onTransactionComplete }) => {
     const handleDelete = () => {
         const newAmount = amountReceived.slice(0, -1);
         setAmountReceived(newAmount);
-        const numericValue = parseFloat(newAmount);
-        setChange(numericValue - total);
     };
 
     const handlePaymentMethodChange = (method) => {
@@ -74,77 +75,42 @@ const POSSales = ({ total, currency, onTransactionComplete }) => {
         }
     };
 
-    if (total === 0) {
-        return (
-            <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-                <h1 className="text-4xl font-bold mb-8">POS Sales</h1>
+    return (
+        <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+            <h1 className="text-4xl font-bold mb-8">POS Sales</h1>
+
+            {total === 0 ? (
                 <h2 className="text-2xl text-gray-500">No items in cart</h2>
-            </div>
-        );
-    }
-
-    if (total < 0) {
-        return (
-            <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-                <h1 className="text-4xl font-bold mb-8">POS Sales</h1>
+            ) : total < 0 ? (
                 <h2 className="text-2xl text-gray-500">Total cannot be negative</h2>
-            </div>
-        );
-    }
-
-    if (change < 0) {
-        return (
-            <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-                <h1 className="text-4xl font-bold mb-8">POS Sales</h1>
+            ) : change < 0 ? (
                 <h2 className="text-2xl text-gray-500">Amount received is less than total</h2>
-            </div>
-        );
-    }
-
-    if (change === 0) {
-        return (
-            <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-                <h1 className="text-4xl font-bold mb-8">POS Sales</h1>
+            ) : change === 0 ? (
                 <h2 className="text-2xl text-gray-500">Amount received is equal to total</h2>
-            </div>
-        );
-    }
-
-    if (change < 0) {
-        return (
-            <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-                <h1 className="text-4xl font-bold mb-8">POS Sales</h1>
-                <h2 className="text-2xl text-gray-500">Amount received is less than total</h2>
-            </div>
-        );
-    }
-
-  return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-      <h1 className="text-4xl font-bold mb-8">POS Sales</h1>
-
-      <div className="flex flex-col items-center justify-center">
-        <CashRegister
-          total={total}
-          currency={currency}
-          amountReceived={amountReceived}
-          change={change}
-          onAmountChange={handleAmountChange}
-          onClear={handleClear}
-          onDelete={handleDelete}
-          onPaymentMethodChange={handlePaymentMethodChange}
-        />
-        <NumberPad
-          amountReceived={amountReceived}
-          onAmountChange={handleAmountChange}
-          onPaymentMethodChange={handlePaymentMethodChange}
-          onClear={handleClear}
-          onDelete={handleDelete}
-          onSubmit={handleSubmit}
-        />
-      </div>
-    </div>
-  );
+            ) : (
+                <div className="flex flex-col items-center justify-center">
+                    <CashRegister
+                        total={total}
+                        currency={currency}
+                        amountReceived={amountReceived}
+                        change={change}
+                        onAmountChange={handleAmountChange}
+                        onClear={handleClear}
+                        onDelete={handleDelete}
+                        onPaymentMethodChange={handlePaymentMethodChange}
+                    />
+                    <NumberPad
+                        amountReceived={amountReceived}
+                        onAmountChange={handleAmountChange}
+                        onPaymentMethodChange={handlePaymentMethodChange}
+                        onClear={handleClear}
+                        onDelete={handleDelete}
+                        onSubmit={handleSubmit}
+                    />
+                </div>
+            )}
+        </div>
+    );
 };
 
 export default POSSales;
