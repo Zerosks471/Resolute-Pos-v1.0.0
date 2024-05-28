@@ -12,6 +12,7 @@ import {
 import { toast } from "react-hot-toast";
 import {
   IconArmchair,
+  IconBoxSeam,
   IconCash,
   IconCheck,
   IconChecks,
@@ -28,8 +29,6 @@ import { setDetailsForReceiptPrint } from "../helpers/ReceiptHelper";
 import { SocketContext } from "../contexts/SocketContext";
 import { initSocket } from "../utils/socket";
 import { textToSpeech } from "../utils/textToSpeech";
-import CashRegisterModal from "../components/CashRegisterModal"; // Import the Cash Register Modal component
-import handleTransactionComplete from "../components/CashRegisterModal";
 
 export default function OrdersPage() {
   const printReceiptRef = useRef();
@@ -52,7 +51,6 @@ export default function OrdersPage() {
     summaryTotal: 0,
     summaryOrders: [],
     order: null,
-    showCashRegister: false, // Add state for showing Cash Register
   });
 
   useEffect(() => {
@@ -270,8 +268,98 @@ export default function OrdersPage() {
           summaryOrders: orders,
           completeOrderIds: orderIds,
           order: order,
-          showCashRegister: true, // Show Cash Register
         });
+
+        document.getElementById("modal-order-summary-complete").showModal();
+      }
+    } catch (error) {
+      const message =
+        error?.response?.data?.message ||
+        "Error processing your request, Please try later!";
+      toast.dismiss();
+      console.error(error);
+      toast.error(message);
+    }
+  };
+  const btnPayAndComplete = async () => {
+    const isPrintReceipt = printReceiptRef.current.checked || false;
+
+    try {
+      toast.loading("Please wait...");
+      const res = await payAndCompleteKitchenOrder(
+        state.completeOrderIds,
+        state.summaryNetTotal,
+        state.summaryTaxTotal,
+        state.summaryTotal
+      );
+      toast.dismiss();
+      if (res.status == 200) {
+        sendOrderUpdateEvent();
+        await refreshOrders();
+        toast.success(res.data.message);
+        document.getElementById("modal-order-summary-complete").close();
+
+        if (isPrintReceipt) {
+          const { table_id, table_title, floor } = state.order;
+
+          const orders = [];
+          const orderIds = state.completeOrderIds.join(", ");
+
+          for (const o of state.summaryOrders) {
+            const items = o.items;
+            items.forEach((i) => {
+              const variant = i.variant_id
+                ? {
+                    id: i.variant_id,
+                    title: i.variant_title,
+                    price: i.variant_price,
+                  }
+                : null;
+              orders.push({
+                ...i,
+                title: i.item_title,
+                addons_ids:
+                  i?.addons?.length > 0 ? i?.addons?.map((a) => a.id) : [],
+                variant: variant,
+              });
+            });
+          }
+
+          const {
+            customer_id,
+            customer_type,
+            customer_name,
+            date,
+            delivery_type,
+          } = state.summaryOrders[0];
+
+          setDetailsForReceiptPrint({
+            cartItems: orders,
+            deliveryType: delivery_type,
+            customerType: customer_type,
+            customer: { id: customer_id, name: customer_name },
+            tableId: table_id,
+            currency,
+            storeSettings,
+            printSettings,
+            itemsTotal: state.summaryNetTotal,
+            taxTotal: state.summaryTaxTotal,
+            payableTotal: state.summaryTotal,
+            tokenNo: null,
+            orderId: orderIds,
+          });
+
+          const receiptWindow = window.open(
+            "/print-receipt",
+            "_blank",
+            "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400"
+          );
+          receiptWindow.onload = (e) => {
+            setTimeout(() => {
+              receiptWindow.print();
+            }, 400);
+          };
+        }
       }
     } catch (error) {
       const message =
@@ -283,16 +371,80 @@ export default function OrdersPage() {
     }
   };
 
-  const handleTransactionComplete = (transactionDetails) => {
+  const btnPrintReceipt = async (orderIdsArr) => {
     try {
-      if (transactionDetails == null) {
-        throw new Error("Transaction Details cannot be null");
+      toast.loading("Please wait...");
+      const res = await getCompleteOrderPaymentSummary(orderIdsArr);
+      toast.dismiss();
+
+      if (res.status == 200) {
+        const { subtotal, taxTotal, total, orders: ordersArr } = res.data;
+
+        const orders = [];
+        const orderIds = orderIdsArr.join(", ");
+
+        for (const o of ordersArr) {
+          const items = o.items;
+          items.forEach((i) => {
+            const variant = i.variant_id
+              ? {
+                  id: i.variant_id,
+                  title: i.variant_title,
+                  price: i.variant_price,
+                }
+              : null;
+            orders.push({
+              ...i,
+              title: i.item_title,
+              addons_ids:
+                i?.addons?.length > 0 ? i?.addons?.map((a) => a.id) : [],
+              variant: variant,
+            });
+          });
+        }
+
+        const {
+          customer_id,
+          customer_type,
+          customer_name,
+          date,
+          delivery_type,
+        } = ordersArr;
+
+        setDetailsForReceiptPrint({
+          cartItems: orders,
+          deliveryType: delivery_type,
+          customerType: customer_type,
+          customer: { id: customer_id, name: customer_name },
+          tableId: null,
+          currency,
+          storeSettings,
+          printSettings,
+          itemsTotal: subtotal,
+          taxTotal: taxTotal,
+          payableTotal: total,
+          tokenNo: null,
+          orderId: orderIds,
+        });
+
+        const receiptWindow = window.open(
+          "/print-receipt",
+          "_blank",
+          "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400"
+        );
+        receiptWindow.onload = (e) => {
+          setTimeout(() => {
+            receiptWindow.print();
+          }, 400);
+        };
       }
-      setDetailsForReceiptPrint(transactionDetails);
-      setState((prevState) => ({ ...prevState, showCashRegister: false }));
-      refreshOrders();
     } catch (error) {
+      const message =
+        error?.response?.data?.message ||
+        "Error processing your request, Please try later!";
+      toast.dismiss();
       console.error(error);
+      toast.error(message);
     }
   };
 
@@ -608,15 +760,6 @@ export default function OrdersPage() {
             );
           })}
         </div>
-      )}
-
-      {state.showCashRegister && (
-        <CashRegisterModal
-          total={state.summaryTotal}
-          currency={currency}
-          onTransactionComplete={handleTransactionComplete}
-          onClose={() => setState({ ...state, showCashRegister: false })}
-        />
       )}
 
       {/* dialog: successful order item status update */}
