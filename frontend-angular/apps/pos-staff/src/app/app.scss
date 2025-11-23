@@ -1,606 +1,111 @@
-// Touch-friendly POS Application Layout
 .app-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  overflow: hidden;
 }
 
-// Top Toolbar - Enhanced Visual Design
-.app-toolbar {
+.pos-navbar {
   height: 64px;
   padding: 0 16px;
-  background: linear-gradient(135deg, var(--md-sys-color-primary) 0%, var(--md-sys-color-primary-container) 100%);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
-  gap: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-  .menu-button {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.15);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  .nav-tabs {
+    flex: 1;
+    height: 100%;
 
-    &:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    // Remove Material's bottom border
+    ::ng-deep .mat-mdc-tab-header {
+      border-bottom: none;
     }
 
-    &:active {
-      transform: scale(0.98);
+    // Make tabs look like POS buttons
+    ::ng-deep .mat-mdc-tab {
+      min-width: 100px;
+      height: 64px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+
+      // Icon + label horizontal layout
+      .mat-mdc-tab-label-content {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
     }
 
-    mat-icon {
-      font-size: 24px;
-      width: 24px;
-      height: 24px;
+    // Active tab indicator - bold underline
+    ::ng-deep .mdc-tab-indicator__content {
+      border-top-width: 3px;
+      border-color: white;
+    }
+
+    // Custom badge styling
+    .tab-badge {
+      background: #ff4444;
       color: white;
+      border-radius: 12px;
+      padding: 2px 8px;
+      font-size: 12px;
+      margin-left: 4px;
     }
-  }
-
-  .app-title {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 0px;
-    color: white;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
 
   .spacer {
     flex: 1 1 auto;
   }
 
-  .time-date-display {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 2px;
-    padding: 6px 14px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-
-    .time {
-      font-size: 15px;
-      font-weight: 600;
-      color: white;
-      line-height: 1.2;
-      letter-spacing: 0.3px;
-    }
-
-    .date {
-      font-size: 11px;
-      font-weight: 500;
-      color: rgba(255, 255, 255, 0.9);
-      line-height: 1.2;
-    }
-  }
-
-  .user-info {
+  .navbar-utilities {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px 16px;
-    border-radius: 24px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 16px;
 
-    &:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    }
+    .time-date {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
 
-    .user-icon {
-      font-size: 24px;
-      width: 24px;
-      height: 24px;
-      color: white;
+      .time {
+        font-size: 16px;
+        font-weight: 500;
+      }
+
+      .date {
+        font-size: 12px;
+        opacity: 0.9;
+      }
     }
 
     .user-name {
       font-size: 14px;
-      font-weight: 600;
-      color: white;
-    }
-  }
-
-  .logout-button {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.15);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-
-    &:hover {
-      background: rgba(255, 100, 100, 0.3);
-      transform: translateY(-1px);
-      box-shadow: 0 2px 8px rgba(255, 0, 0, 0.2);
-    }
-
-    &:active {
-      transform: scale(0.98);
-    }
-
-    mat-icon {
-      font-size: 24px;
-      width: 24px;
-      height: 24px;
-      color: white;
+      font-weight: 500;
     }
   }
 }
 
-// Sidenav Container
-.sidenav-container {
-  flex: 1 1 auto;
-  height: calc(100vh - 64px);
-}
-
-// Side Navigation - Enhanced Visual Design
-.sidenav {
-  width: 260px;
-  background: var(--md-sys-color-surface);
-  border-right: none;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
-
-  .nav-list {
-    padding: 16px 12px;
-
-    .nav-item {
-      height: 56px;
-      margin-bottom: 6px;
-      border-radius: 14px;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      padding: 0 16px;
-      position: relative;
-      overflow: hidden;
-
-      // Subtle background gradient on hover
-      &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg, transparent 0%, var(--md-sys-color-surface-variant) 100%);
-        opacity: 0;
-        transition: opacity 0.2s ease;
-      }
-
-      mat-icon {
-        font-size: 24px;
-        width: 24px;
-        height: 24px;
-        color: var(--md-sys-color-on-surface-variant);
-        margin-right: 16px;
-        transition: all 0.2s ease;
-        position: relative;
-        z-index: 1;
-      }
-
-      span {
-        font-size: 15px;
-        font-weight: 600;
-        color: var(--md-sys-color-on-surface-variant);
-        transition: all 0.2s ease;
-        position: relative;
-        z-index: 1;
-      }
-
-      &:hover {
-        background: var(--md-sys-color-surface-container-high);
-        transform: translateX(4px);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-        &::before {
-          opacity: 0.5;
-        }
-
-        mat-icon,
-        span {
-          color: var(--md-sys-color-on-surface);
-        }
-
-        mat-icon {
-          transform: scale(1.08);
-        }
-      }
-
-      &.active {
-        background: linear-gradient(135deg, var(--md-sys-color-primary-container) 0%, var(--md-sys-color-secondary-container) 100%);
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
-        transform: translateX(6px);
-
-        mat-icon,
-        span {
-          color: var(--md-sys-color-on-primary-container);
-          font-weight: 700;
-        }
-      }
-
-      &:active {
-        transform: scale(0.98) translateX(3px);
-      }
-    }
-  }
-}
-
-// Main Content Area
 .main-content {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-
-  .content-wrapper {
-    flex: 1 1 auto;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 24px;
-    background: var(--md-sys-color-surface);
-
-    &.mobile {
-      padding: 16px;
-      padding-bottom: 88px; // Space for bottom nav
-    }
-
-    &.tablet {
-      padding: 20px;
-      padding-bottom: 88px; // Space for bottom nav
-    }
-
-    // Smooth scrolling for touch
-    -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
-  }
+  flex: 1;
+  overflow: auto;
 }
 
-// Bottom Navigation - Enhanced Visual Design
-.bottom-nav {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 72px;
-  background: linear-gradient(to top, var(--md-sys-color-surface) 0%, var(--md-sys-color-surface-container) 100%);
-  border-top: 1px solid var(--md-sys-color-outline-variant);
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1), 0 -1px 4px rgba(0, 0, 0, 0.06);
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 999;
-  padding: 0 8px;
-  backdrop-filter: blur(10px);
-
-  .bottom-nav-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    min-width: 64px;
-    max-width: 120px;
-    height: 64px;
-    padding: 8px;
-    border-radius: 16px;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    color: var(--md-sys-color-on-surface-variant);
-    position: relative;
-    overflow: hidden;
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at center, var(--md-sys-color-primary-container) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-
-    mat-icon {
-      font-size: 26px;
-      width: 26px;
-      height: 26px;
-      transition: all 0.2s ease;
-      position: relative;
-      z-index: 1;
-    }
-
-    .nav-label {
-      font-size: 12px;
-      font-weight: 600;
-      text-align: center;
-      line-height: 1.2;
-      max-width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-      position: relative;
-      z-index: 1;
-    }
-
-    &:hover {
-      background: var(--md-sys-color-surface-container-high);
-      color: var(--md-sys-color-on-surface);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
-      mat-icon {
-        transform: scale(1.1);
-      }
-    }
-
-    &.active {
-      background: linear-gradient(135deg, var(--md-sys-color-primary-container) 0%, var(--md-sys-color-secondary-container) 100%);
-      color: var(--md-sys-color-on-primary-container);
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
-      transform: translateY(-2px);
-
-      &::before {
-        opacity: 0.3;
-      }
-
-      mat-icon {
-        color: var(--md-sys-color-on-primary-container);
-        transform: scale(1.15);
-      }
-
-      .nav-label {
-        font-weight: 700;
-        color: var(--md-sys-color-on-primary-container);
-      }
-    }
-
-    &:active {
-      transform: scale(0.96) translateY(-1px);
-    }
-  }
-}
-
-// Responsive adjustments
-@media (max-width: 599px) {
-  // Extra small devices (phones)
-  .app-toolbar {
-    height: 56px;
+// Mobile adjustments
+@media (max-width: 768px) {
+  .pos-navbar {
     padding: 0 8px;
-    gap: 8px;
 
-    .app-title {
-      font-size: 16px;
+    .nav-tabs ::ng-deep .mat-mdc-tab {
+      min-width: 80px;
+      font-size: 13px;
     }
 
-    .time-date-display {
-      padding: 4px 10px;
-
-      .time {
-        font-size: 13px;
-      }
-
-      .date {
-        font-size: 10px;
-      }
-    }
-
-    .user-info {
-      padding: 6px 12px;
+    .navbar-utilities {
       gap: 8px;
 
-      .user-icon {
-        font-size: 20px;
-        width: 20px;
-        height: 20px;
-      }
-
-      .user-name {
-        display: none; // Hide user name on small screens
-      }
-    }
-
-    .logout-button {
-      width: 44px;
-      height: 44px;
-
-      mat-icon {
-        font-size: 20px;
-        width: 20px;
-        height: 20px;
+      .time-date .date {
+        display: none; // Hide date on mobile
       }
     }
   }
-
-  .sidenav-container {
-    height: calc(100vh - 56px);
-  }
-
-  .content-wrapper {
-    padding: 12px !important;
-    padding-bottom: 84px !important;
-  }
-
-  .bottom-nav {
-    height: 68px;
-    padding: 0 4px;
-
-    .bottom-nav-item {
-      height: 60px;
-      min-width: 60px;
-
-      mat-icon {
-        font-size: 24px;
-        width: 24px;
-        height: 24px;
-      }
-
-      .nav-label {
-        font-size: 11px;
-      }
-    }
-  }
-}
-
-@media (min-width: 600px) and (max-width: 959px) {
-  // Medium devices (tablets)
-  .app-toolbar {
-    height: 60px;
-    padding: 0 12px;
-    gap: 10px;
-
-    .app-title {
-      font-size: 17px;
-    }
-
-    .time-date-display {
-      padding: 5px 12px;
-
-      .time {
-        font-size: 14px;
-      }
-
-      .date {
-        font-size: 10px;
-      }
-    }
-
-    .user-info {
-      padding: 7px 14px;
-
-      .user-icon {
-        font-size: 22px;
-        width: 22px;
-        height: 22px;
-      }
-
-      .user-name {
-        font-size: 13px;
-      }
-    }
-
-    .logout-button {
-      width: 46px;
-      height: 46px;
-
-      mat-icon {
-        font-size: 22px;
-        width: 22px;
-        height: 22px;
-      }
-    }
-  }
-
-  .sidenav-container {
-    height: calc(100vh - 60px);
-  }
-
-  .content-wrapper {
-    padding: 16px !important;
-    padding-bottom: 84px !important;
-  }
-
-  .bottom-nav {
-    height: 70px;
-
-    .bottom-nav-item {
-      height: 62px;
-
-      mat-icon {
-        font-size: 25px;
-        width: 25px;
-        height: 25px;
-      }
-
-      .nav-label {
-        font-size: 11px;
-      }
-    }
-  }
-}
-
-@media (min-width: 960px) {
-  // Large devices (desktops)
-  .content-wrapper {
-    padding: 24px !important;
-  }
-
-  .bottom-nav {
-    display: none; // Hide bottom nav on desktop
-  }
-}
-
-// Global touch-friendly improvements
-::ng-deep {
-  // Larger touch targets for all buttons
-  .mat-mdc-button,
-  .mat-mdc-raised-button,
-  .mat-mdc-icon-button,
-  .mat-mdc-fab {
-    min-height: 48px;
-    min-width: 48px;
-  }
-
-  // Larger form fields
-  .mat-mdc-form-field {
-    font-size: 16px; // Prevent zoom on mobile
-  }
-
-  // Better spacing for lists
-  .mat-mdc-list-item {
-    min-height: 56px;
-  }
-
-  // Larger checkboxes and radio buttons
-  .mat-mdc-checkbox,
-  .mat-mdc-radio-button {
-    .mdc-checkbox,
-    .mdc-radio {
-      width: 24px;
-      height: 24px;
-    }
-  }
-
-  // Card touch improvements
-  .mat-mdc-card {
-    border-radius: 16px;
-    margin-bottom: 16px;
-  }
-
-  // Dialog improvements for touch
-  .mat-mdc-dialog-container {
-    border-radius: 20px;
-  }
-}
-
-// Prevent text selection for better touch experience
-.nav-item,
-.bottom-nav-item,
-.menu-button,
-.logout-button {
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-// Loading states
-.loading-spinner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  min-height: 200px;
-}
-
-// Accessibility - ensure focus is visible
-*:focus-visible {
-  outline: 2px solid var(--md-sys-color-primary);
-  outline-offset: 2px;
 }
