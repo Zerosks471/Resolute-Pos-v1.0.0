@@ -1,0 +1,30 @@
+<div class="menu-browser">
+  @if (loading$ | async) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  } @else if (error$ | async; as error) {
+    <div class="error-message">
+      {{ error }}
+    </div>
+  } @else {
+    <div class="menu-grid">
+      @for (item of filteredItems(); track item.id) {
+        <mat-card
+          class="menu-item-card"
+          [class.unavailable]="!isItemAvailable(item)"
+          (click)="selectItem(item)">
+          <img
+            mat-card-image
+            [src]="getImageUrl(item)"
+            [alt]="item.name" />
+          <mat-card-content>
+            <h3 class="item-name">{{ item.name }}</h3>
+            <p class="item-description">{{ item.description }}</p>
+            <span class="price">\${{ item.price | number: '1.2-2' }}</span>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  }
+</div>
