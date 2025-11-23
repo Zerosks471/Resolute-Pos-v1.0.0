@@ -11,7 +11,6 @@ import {
   MenuItem,
   MenuCategory,
 } from '@resolute-pos/data-access';
-import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
 describe('MenuBrowserComponent', () => {

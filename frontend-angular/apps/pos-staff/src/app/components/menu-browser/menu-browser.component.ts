@@ -6,7 +6,6 @@ import {
   OnInit,
   inject,
   computed,
-  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
