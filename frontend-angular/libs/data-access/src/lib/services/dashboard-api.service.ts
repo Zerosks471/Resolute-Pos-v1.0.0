@@ -19,7 +19,7 @@ export class DashboardApiService {
 
   getTodaysMetrics(): Observable<ApiResponse<DashboardMetrics>> {
     return this.apiClient.get<ApiResponse<DashboardMetrics>>(
-      '/dashboard/metrics'
+      '/dashboard'
     );
   }
 }
