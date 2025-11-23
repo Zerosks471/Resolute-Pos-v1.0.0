@@ -29,4 +29,46 @@ describe('ButtonComponent', () => {
     component.onClick();
     expect(component.clicked.emit).toHaveBeenCalled();
   });
+
+  it('should show spinner when loading', () => {
+    component.loading = true;
+    fixture.detectChanges();
+
+    const spinner = fixture.nativeElement.querySelector('mat-spinner');
+    expect(spinner).toBeTruthy();
+  });
+
+  it('should not emit click when disabled', () => {
+    component.disabled = true;
+    jest.spyOn(component.clicked, 'emit');
+    component.onClick();
+    expect(component.clicked.emit).not.toHaveBeenCalled();
+  });
+
+  it('should not emit click when loading', () => {
+    component.loading = true;
+    jest.spyOn(component.clicked, 'emit');
+    component.onClick();
+    expect(component.clicked.emit).not.toHaveBeenCalled();
+  });
+
+  it('should render secondary variant', () => {
+    component.variant = 'secondary';
+    component.label = 'Secondary';
+    fixture.detectChanges();
+
+    const button = fixture.nativeElement.querySelector('button');
+    expect(button.textContent).toContain('Secondary');
+    expect(component.getButtonClass()).toBe('mat-raised-button');
+  });
+
+  it('should render text variant', () => {
+    component.variant = 'text';
+    component.label = 'Text Button';
+    fixture.detectChanges();
+
+    const button = fixture.nativeElement.querySelector('button');
+    expect(button.textContent).toContain('Text Button');
+    expect(component.getButtonClass()).toBe('mat-button');
+  });
 });

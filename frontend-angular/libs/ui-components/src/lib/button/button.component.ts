@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
-  selector: 'resolute-button',
+  selector: 'lib-button',
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatProgressSpinnerModule],
   template: `
@@ -49,6 +49,8 @@ export class ButtonComponent {
         return 'mat-raised-button';
       case 'text':
         return 'mat-button';
+      default:
+        return 'mat-raised-button mat-primary';
     }
   }
 
