@@ -11,3 +11,6 @@ export {
 
 // Export order models including the extended OrderItem
 export * from './order.model';
+
+// Export menu item models
+export * from './menu-item.model';

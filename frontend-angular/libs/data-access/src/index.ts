@@ -11,3 +11,6 @@ export * from './lib/+state/orders/orders.actions';
 export * from './lib/+state/orders/orders.reducer';
 export * from './lib/+state/orders/orders.selectors';
 export * from './lib/+state/orders/orders.effects';
+export * from './lib/+state/menu/menu.actions';
+export * from './lib/+state/menu/menu.reducer';
+export * from './lib/+state/menu/menu.selectors';
