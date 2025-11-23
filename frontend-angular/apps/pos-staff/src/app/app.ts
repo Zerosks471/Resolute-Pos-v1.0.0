@@ -121,8 +121,4 @@ export class App {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
-
-  protected isActiveRoute(route: string): boolean {
-    return this.router.url.startsWith(route);
-  }
 }
