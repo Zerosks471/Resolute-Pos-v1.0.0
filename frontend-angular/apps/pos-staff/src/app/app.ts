@@ -43,8 +43,12 @@ export class App {
   protected isMobile = signal(false);
   protected isTablet = signal(false);
   protected sidenavOpened = signal(true);
+  protected currentTime = signal('');
+  protected currentDate = signal('');
 
   protected currentUser$ = this.authService.currentUser$;
+
+  private timeInterval?: number;
 
   protected navItems: NavItem[] = [
     { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
@@ -56,6 +60,14 @@ export class App {
   ];
 
   constructor() {
+    // Initialize time and date
+    this.updateTime();
+
+    // Update time every second
+    this.timeInterval = window.setInterval(() => {
+      this.updateTime();
+    }, 1000);
+
     // Detect screen size and adjust navigation layout
     this.breakpointObserver
       .observe([Breakpoints.HandsetPortrait, Breakpoints.HandsetLandscape])
@@ -69,6 +81,28 @@ export class App {
       .subscribe(result => {
         this.isTablet.set(result.matches);
       });
+  }
+
+  ngOnDestroy(): void {
+    if (this.timeInterval) {
+      clearInterval(this.timeInterval);
+    }
+  }
+
+  private updateTime(): void {
+    const now = new Date();
+
+    // Format time: HH:MM AM/PM
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const displayHours = hours % 12 || 12;
+    const displayMinutes = minutes.toString().padStart(2, '0');
+    this.currentTime.set(`${displayHours}:${displayMinutes} ${ampm}`);
+
+    // Format date: Mon, Jan 23
+    const options: Intl.DateTimeFormatOptions = { weekday: 'short', month: 'short', day: 'numeric' };
+    this.currentDate.set(now.toLocaleDateString('en-US', options));
   }
 
   protected toggleSidenav(): void {

@@ -16,6 +16,12 @@
 
       <span class="spacer"></span>
 
+      <!-- Time and Date Display -->
+      <div class="time-date-display">
+        <div class="time">{{ currentTime() }}</div>
+        <div class="date">{{ currentDate() }}</div>
+      </div>
+
       <!-- User Info -->
       @if (currentUser$ | async; as user) {
         <div class="user-info">
