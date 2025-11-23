@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { OrdersState, ordersAdapter } from './orders.reducer';
+import { OrderStatus } from '../../models';
 
 export const selectOrdersState = createFeatureSelector<OrdersState>('orders');
 
@@ -27,7 +28,9 @@ export const selectOrderById = (orderId: string) =>
 
 export const selectActiveOrders = createSelector(selectAllOrders, (orders) =>
   orders.filter(
-    (order) => order.status !== 'completed' && order.status !== 'cancelled'
+    (order) =>
+      order.status !== OrderStatus.COMPLETED &&
+      order.status !== OrderStatus.CANCELLED
   )
 );
 
