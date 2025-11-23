@@ -13,7 +13,7 @@ import { CartService, MenuItem } from '@resolute-pos/data-access';
   standalone: true,
   imports: [CommonModule, MenuBrowserComponent, CartDisplayComponent],
   templateUrl: './pos.component.html',
-  styleUrl: './pos.component.scss',
+  styleUrls: ['./pos.component.scss'],
 })
 export class PosComponent {
   private cartService = inject(CartService);
