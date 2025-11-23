@@ -1,13 +1,11 @@
-import { Component, inject, signal, PLATFORM_ID } from '@angular/core';
+import { Component, inject, signal, computed, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatBadgeModule } from '@angular/material/badge';
+import { MatTabsModule } from '@angular/material/tabs';
 import { AuthService } from '@resolute-pos/auth';
 import { CartService } from '@resolute-pos/data-access';
 
@@ -22,12 +20,10 @@ interface NavItem {
   imports: [
     CommonModule,
     RouterModule,
-    MatSidenavModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
-    MatListModule,
-    MatBadgeModule,
+    MatTabsModule,
   ],
   selector: 'app-root',
   templateUrl: './app.html',
@@ -43,13 +39,20 @@ export class App {
   protected title = 'Resolute POS';
   protected isMobile = signal(false);
   protected isTablet = signal(false);
-  protected sidenavOpened = signal(true);
   protected currentTime = signal('');
   protected currentDate = signal('');
 
   protected currentUser$ = this.authService.currentUser$;
 
   private timeInterval?: number;
+
+  protected selectedTabIndex = computed(() => {
+    const currentRoute = this.router.url;
+    const index = this.navItems.findIndex(item =>
+      currentRoute.startsWith(item.route)
+    );
+    return index >= 0 ? index : 0;
+  });
 
   protected navItems: NavItem[] = [
     { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
@@ -76,7 +79,6 @@ export class App {
       .observe([Breakpoints.HandsetPortrait, Breakpoints.HandsetLandscape])
       .subscribe(result => {
         this.isMobile.set(result.matches);
-        this.sidenavOpened.set(!result.matches); // Close sidenav on mobile
       });
 
     this.breakpointObserver
@@ -108,15 +110,10 @@ export class App {
     this.currentDate.set(now.toLocaleDateString('en-US', options));
   }
 
-  protected toggleSidenav(): void {
-    this.sidenavOpened.set(!this.sidenavOpened());
-  }
-
-  protected navigate(route: string): void {
-    this.router.navigate([route]);
-    // Close sidenav on mobile after navigation
-    if (this.isMobile()) {
-      this.sidenavOpened.set(false);
+  protected onTabChange(index: number): void {
+    const selectedItem = this.navItems[index];
+    if (selectedItem) {
+      this.router.navigate([selectedItem.route]);
     }
   }
 
