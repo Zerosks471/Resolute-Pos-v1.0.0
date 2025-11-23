@@ -1,0 +1,144 @@
+<div class="dashboard-container">
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="loading-state">
+      <mat-spinner diameter="60"></mat-spinner>
+      <p>Loading dashboard metrics...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (error()) {
+    <div class="error-state">
+      <mat-icon>error_outline</mat-icon>
+      <h2>Unable to Load Dashboard</h2>
+      <p>{{ error() }}</p>
+      <button mat-raised-button color="primary" (click)="retry()">
+        <mat-icon>refresh</mat-icon>
+        Retry
+      </button>
+    </div>
+  }
+
+  <!-- Dashboard Content -->
+  @if (!loading() && !error()) {
+    <!-- Header -->
+    <div class="dashboard-header">
+      <h1>Dashboard</h1>
+      <div class="header-actions">
+        <button mat-icon-button (click)="loadMetrics()" [disabled]="loading()" aria-label="Refresh metrics">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Metrics Grid -->
+    <div class="metrics-grid">
+      <!-- Total Sales Card -->
+      <mat-card class="metric-card sales-card">
+        <mat-card-header>
+          <div class="metric-icon">
+            <mat-icon>attach_money</mat-icon>
+          </div>
+          <mat-card-title>Today's Sales</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="metric-value">${{ metrics.totalSales | number:'1.2-2' }}</div>
+          @if (metrics.comparedToYesterday !== undefined) {
+            <div class="metric-change" [class.positive]="metrics.comparedToYesterday > 0" [class.negative]="metrics.comparedToYesterday < 0">
+              <mat-icon>{{ metrics.comparedToYesterday > 0 ? 'trending_up' : 'trending_down' }}</mat-icon>
+              {{ metrics.comparedToYesterday > 0 ? '+' : '' }}{{ metrics.comparedToYesterday }}% vs yesterday
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Orders Card -->
+      <mat-card class="metric-card orders-card">
+        <mat-card-header>
+          <div class="metric-icon">
+            <mat-icon>receipt_long</mat-icon>
+          </div>
+          <mat-card-title>Orders Today</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="metric-value">{{ metrics.orderCount }}</div>
+          @if (metrics.avgTicket !== undefined) {
+            <div class="metric-subtitle">
+              <mat-icon>calculate</mat-icon>
+              Avg ticket: ${{ metrics.avgTicket | number:'1.2-2' }}
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Active Tables Card -->
+      <mat-card class="metric-card tables-card">
+        <mat-card-header>
+          <div class="metric-icon">
+            <mat-icon>table_restaurant</mat-icon>
+          </div>
+          <mat-card-title>Active Tables</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="metric-value">{{ metrics.activeTables }}</div>
+          <div class="metric-subtitle">
+            <mat-icon>people</mat-icon>
+            Tables with customers
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Kitchen Queue Card -->
+      <mat-card class="metric-card kitchen-card">
+        <mat-card-header>
+          <div class="metric-icon">
+            <mat-icon>kitchen</mat-icon>
+          </div>
+          <mat-card-title>Kitchen Queue</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="metric-value" [class.alert]="metrics.kitchenQueue > 5">
+            {{ metrics.kitchenQueue }}
+          </div>
+          <div class="metric-subtitle">
+            <mat-icon>schedule</mat-icon>
+            Orders in preparation
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions-section">
+      <h2>Quick Actions</h2>
+      <div class="action-grid">
+        <button mat-raised-button color="primary" class="action-button new-order" routerLink="/pos">
+          <mat-icon>add_shopping_cart</mat-icon>
+          <span class="button-label">New Order</span>
+        </button>
+
+        <button mat-raised-button class="action-button view-orders" routerLink="/orders">
+          <mat-icon>receipt_long</mat-icon>
+          <span class="button-label">View Orders</span>
+        </button>
+
+        <button mat-raised-button class="action-button manage-tables" routerLink="/tables">
+          <mat-icon>table_restaurant</mat-icon>
+          <span class="button-label">Manage Tables</span>
+        </button>
+
+        <button mat-raised-button class="action-button menu" routerLink="/menu">
+          <mat-icon>restaurant_menu</mat-icon>
+          <span class="button-label">Menu Items</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Last Updated -->
+    <div class="last-updated">
+      <mat-icon>schedule</mat-icon>
+      Last updated: {{ lastUpdated | date:'short' }}
+    </div>
+  }
+</div>
