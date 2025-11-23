@@ -21,11 +21,21 @@ import {
   APP_FEATURE_KEY,
   authInterceptor,
   menuReducer,
-  MenuEffects
+  MenuEffects,
+  ApiClientService
 } from '@resolute-pos/data-access';
+import { environment } from '../environments/environment';
+
+// Initialize API client with environment URL
+const initializeApiClient = () => {
+  const apiClient = new ApiClientService();
+  apiClient.setBaseUrl(environment.apiUrl);
+  return apiClient;
+};
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    { provide: ApiClientService, useFactory: initializeApiClient },
     // provideClientHydration(withEventReplay()), // Disabled for now - causing duplicate rendering with Material components
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
