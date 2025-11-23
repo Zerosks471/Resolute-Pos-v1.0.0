@@ -16,7 +16,12 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { provideEffects } from '@ngrx/effects';
-import { appReducer, APP_FEATURE_KEY, authInterceptor } from '@resolute-pos/data-access';
+import {
+  appReducer,
+  APP_FEATURE_KEY,
+  authInterceptor,
+  menuReducer
+} from '@resolute-pos/data-access';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -32,6 +37,7 @@ export const appConfig: ApplicationConfig = {
     }),
     provideStore({
       [APP_FEATURE_KEY]: appReducer,
+      menu: menuReducer,
     }),
     provideEffects(),
     provideStoreDevtools({

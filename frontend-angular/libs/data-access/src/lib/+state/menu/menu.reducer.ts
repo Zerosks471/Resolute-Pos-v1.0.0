@@ -4,7 +4,6 @@ import * as MenuActions from './menu.actions';
 import { MenuItem } from '../../models';
 
 export interface MenuState extends EntityState<MenuItem> {
-  selectedId: string | null;
   loaded: boolean;
   loading: boolean;
   error: string | null;
@@ -13,7 +12,6 @@ export interface MenuState extends EntityState<MenuItem> {
 export const menuAdapter: EntityAdapter<MenuItem> = createEntityAdapter<MenuItem>();
 
 export const initialState: MenuState = menuAdapter.getInitialState({
-  selectedId: null,
   loaded: false,
   loading: false,
   error: null,
