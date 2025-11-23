@@ -1,69 +1,92 @@
 .customization-dialog {
-  min-width: 400px;
-  max-width: 600px;
+  min-width: 450px;
+  max-width: 650px;
 
   .dialog-title {
     margin: 0;
-    padding: 20px 24px;
-    font-size: 24px;
-    font-weight: 500;
+    padding: 24px 28px;
+    font-size: 26px;
+    font-weight: 600;
     color: var(--md-sys-color-on-surface);
-    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    border-bottom: 2px solid var(--md-sys-color-outline-variant);
+    line-height: 1.3;
 
     .description {
       display: block;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 400;
       color: var(--md-sys-color-on-surface-variant);
-      margin-top: 4px;
+      margin-top: 8px;
+      line-height: 1.4;
     }
   }
 
   .dialog-content {
-    padding: 24px;
+    padding: 28px;
   }
 
   .price-section {
-    margin-bottom: 24px;
+    margin-bottom: 28px;
 
     .base-price {
-      font-size: 16px;
-      font-weight: 500;
+      font-size: 18px;
+      font-weight: 600;
       color: var(--md-sys-color-on-surface);
+      padding: 12px 16px;
+      background: var(--md-sys-color-surface-variant);
+      border-radius: 12px;
+      display: inline-block;
     }
   }
 
   .quantity-section {
-    margin-bottom: 24px;
+    margin-bottom: 28px;
 
     .section-label {
       display: block;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--md-sys-color-on-surface-variant);
-      margin-bottom: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface);
+      margin-bottom: 16px;
     }
 
     .quantity-controls {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 20px;
+
+      button {
+        width: 56px;
+        height: 56px;
+        min-width: 56px;
+        min-height: 56px;
+
+        mat-icon {
+          font-size: 32px;
+          width: 32px;
+          height: 32px;
+        }
+
+        &:active:not([disabled]) {
+          transform: scale(0.95);
+        }
+      }
 
       .quantity-input {
-        width: 80px;
-        height: 48px;
-        border: 1px solid var(--md-sys-color-outline);
-        border-radius: 8px;
+        width: 90px;
+        height: 56px;
+        border: 2px solid var(--md-sys-color-outline);
+        border-radius: 12px;
         text-align: center;
-        font-size: 18px;
-        font-weight: 500;
+        font-size: 22px;
+        font-weight: 700;
         color: var(--md-sys-color-on-surface);
         background: var(--md-sys-color-surface);
         padding: 0 8px;
 
         &:focus {
-          outline: 2px solid var(--md-sys-color-primary);
-          outline-offset: -2px;
+          outline: 3px solid var(--md-sys-color-primary);
+          outline-offset: -3px;
           border-color: var(--md-sys-color-primary);
         }
 
@@ -79,24 +102,32 @@
   }
 
   .modifiers-section {
-    margin-bottom: 24px;
+    margin-bottom: 28px;
 
     .section-label {
       display: block;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--md-sys-color-on-surface-variant);
-      margin-bottom: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface);
+      margin-bottom: 16px;
     }
 
     .modifiers-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
 
       .modifier-item {
         ::ng-deep .mat-mdc-checkbox {
           width: 100%;
+          padding: 12px 16px;
+          background: var(--md-sys-color-surface-variant);
+          border-radius: 12px;
+          transition: background-color 0.2s ease;
+
+          &:hover {
+            background: var(--md-sys-color-secondary-container);
+          }
 
           .mdc-form-field {
             width: 100%;
@@ -109,15 +140,22 @@
             padding-right: 8px;
 
             .modifier-name {
-              font-size: 16px;
+              font-size: 17px;
+              font-weight: 500;
               color: var(--md-sys-color-on-surface);
             }
 
             .modifier-price {
-              font-size: 14px;
-              font-weight: 500;
+              font-size: 16px;
+              font-weight: 600;
               color: var(--md-sys-color-primary);
             }
+          }
+
+          // Larger checkbox
+          .mdc-checkbox {
+            width: 28px;
+            height: 28px;
           }
         }
       }
@@ -125,10 +163,21 @@
   }
 
   .instructions-section {
-    margin-bottom: 24px;
+    margin-bottom: 28px;
 
     .full-width {
       width: 100%;
+
+      ::ng-deep {
+        .mat-mdc-text-field-wrapper {
+          font-size: 16px;
+        }
+
+        textarea {
+          font-size: 16px;
+          line-height: 1.5;
+        }
+      }
     }
   }
 
@@ -136,29 +185,42 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px;
-    background: var(--md-sys-color-surface-variant);
-    border-radius: 8px;
+    padding: 20px 24px;
+    background: var(--md-sys-color-primary-container);
+    border-radius: 16px;
+    margin-top: 8px;
 
     .total-label {
-      font-size: 18px;
-      font-weight: 500;
-      color: var(--md-sys-color-on-surface-variant);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--md-sys-color-on-primary-container);
     }
 
     .total-price {
-      font-size: 24px;
-      font-weight: 600;
+      font-size: 28px;
+      font-weight: 700;
       color: var(--md-sys-color-primary);
     }
   }
 
   .dialog-actions {
-    padding: 16px 24px;
-    border-top: 1px solid var(--md-sys-color-outline-variant);
+    padding: 20px 28px;
+    border-top: 2px solid var(--md-sys-color-outline-variant);
     display: flex;
     justify-content: flex-end;
-    gap: 12px;
+    gap: 16px;
+
+    button {
+      min-height: 52px;
+      font-size: 17px;
+      font-weight: 600;
+      padding: 0 28px;
+      border-radius: 12px;
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
   }
 }
 
@@ -168,17 +230,117 @@
     min-width: unset;
     width: 100%;
 
+    .dialog-title {
+      padding: 20px;
+      font-size: 22px;
+
+      .description {
+        font-size: 14px;
+      }
+    }
+
     .dialog-content {
-      padding: 16px;
+      padding: 20px;
+    }
+
+    .price-section {
+      margin-bottom: 20px;
+
+      .base-price {
+        font-size: 16px;
+        padding: 10px 14px;
+      }
     }
 
     .quantity-section {
+      margin-bottom: 20px;
+
+      .section-label {
+        font-size: 15px;
+        margin-bottom: 12px;
+      }
+
       .quantity-controls {
+        gap: 12px;
+
+        button {
+          width: 48px;
+          height: 48px;
+          min-width: 48px;
+          min-height: 48px;
+
+          mat-icon {
+            font-size: 28px;
+            width: 28px;
+            height: 28px;
+          }
+        }
+
         .quantity-input {
-          width: 60px;
-          font-size: 16px;
+          width: 70px;
+          height: 48px;
+          font-size: 18px;
         }
       }
     }
+
+    .modifiers-section {
+      margin-bottom: 20px;
+
+      .section-label {
+        font-size: 15px;
+      }
+
+      .modifiers-list {
+        gap: 12px;
+
+        .modifier-item {
+          ::ng-deep .mat-mdc-checkbox {
+            padding: 10px 12px;
+
+            .mdc-label {
+              .modifier-name {
+                font-size: 15px;
+              }
+
+              .modifier-price {
+                font-size: 14px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .total-section {
+      padding: 16px 20px;
+
+      .total-label {
+        font-size: 18px;
+      }
+
+      .total-price {
+        font-size: 24px;
+      }
+    }
+
+    .dialog-actions {
+      padding: 16px 20px;
+      gap: 12px;
+
+      button {
+        min-height: 48px;
+        font-size: 16px;
+        padding: 0 20px;
+      }
+    }
+  }
+}
+
+// Tablet adjustments
+@media (min-width: 601px) and (max-width: 959px) {
+  .customization-dialog {
+    min-width: 500px;
+    max-width: 600px;
   }
 }

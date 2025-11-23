@@ -1,113 +1,141 @@
-// Menu Browser Component - Material Design 3 Styles
+// Menu Browser Component - Touch-Friendly POS Style
 
 .menu-browser {
   width: 100%;
-  padding: 16px;
+  padding: 20px;
 }
 
 .loading-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 20px;
   min-height: 400px;
+
+  p {
+    font-size: 18px;
+    color: var(--md-sys-color-on-surface-variant);
+    margin-top: 8px;
+  }
 }
 
 .error-message {
-  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px;
   margin: 16px 0;
-  border-radius: 8px;
-  background-color: var(--mat-sys-error-container, #f8d7da);
-  color: var(--mat-sys-on-error-container, #721c24);
+  border-radius: 16px;
+  background-color: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-on-error-container);
   text-align: center;
-  font-family: var(--mat-sys-body-medium-font, Roboto, sans-serif);
-  font-size: var(--mat-sys-body-medium-size, 14px);
-  line-height: var(--mat-sys-body-medium-line-height, 20px);
+  font-size: 16px;
+  line-height: 24px;
 }
 
 .menu-grid {
   display: grid;
-  gap: 16px;
+  gap: 20px;
   grid-template-columns: repeat(2, 1fr); // Mobile: 2 columns
 
-  // Tablet: 3 columns
+  // Tablet: 2-3 columns
   @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  // Desktop: 3-4 columns
+  @media (min-width: 1200px) {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  // Desktop: 4 columns
-  @media (min-width: 1024px) {
+  @media (min-width: 1600px) {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
 .menu-item-card {
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  min-height: 280px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 320px;
   display: flex;
   flex-direction: column;
+  border-radius: 20px;
+  overflow: hidden;
 
   // Material Design 3 elevation and surface
-  background-color: var(--mat-sys-surface-container, #ffffff);
-  color: var(--mat-sys-on-surface, #1c1b1f);
+  background-color: var(--md-sys-color-surface-container);
+  color: var(--md-sys-color-on-surface);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
   // Touch-friendly minimum size
-  min-width: 150px;
+  min-width: 160px;
 
   &:hover:not(.unavailable) {
-    transform: translateY(-4px);
-    box-shadow: var(
-      --mat-sys-elevation-3,
-      0 4px 8px rgba(0, 0, 0, 0.12),
-      0 2px 4px rgba(0, 0, 0, 0.08)
-    );
+    transform: translateY(-6px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
   }
 
   &:active:not(.unavailable) {
-    transform: translateY(-2px);
+    transform: scale(0.98);
   }
 
   &.unavailable {
     opacity: 0.5;
     cursor: not-allowed;
-    background-color: var(--mat-sys-surface-variant, #e7e0ec);
+    background-color: var(--md-sys-color-surface-variant);
 
     &:hover {
       transform: none;
+    }
+
+    &::after {
+      content: 'Unavailable';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--md-sys-color-error);
+      color: var(--md-sys-color-on-error);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
     }
   }
 
   img {
     width: 100%;
-    height: 160px;
+    height: 180px;
     object-fit: cover;
-    background-color: var(--mat-sys-surface-variant, #e7e0ec);
+    background-color: var(--md-sys-color-surface-variant);
   }
 
   mat-card-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 16px;
-    gap: 8px;
+    padding: 20px;
+    gap: 12px;
   }
 
   .item-name {
     margin: 0;
-    font-family: var(--mat-sys-title-medium-font, Roboto, sans-serif);
-    font-size: var(--mat-sys-title-medium-size, 16px);
-    font-weight: var(--mat-sys-title-medium-weight, 500);
-    line-height: var(--mat-sys-title-medium-line-height, 24px);
-    color: var(--mat-sys-on-surface, #1c1b1f);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--md-sys-color-on-surface);
+    min-height: 48px; // Ensure enough space for name
   }
 
   .item-description {
     margin: 0;
     flex: 1;
-    font-family: var(--mat-sys-body-medium-font, Roboto, sans-serif);
-    font-size: var(--mat-sys-body-medium-size, 14px);
-    line-height: var(--mat-sys-body-medium-line-height, 20px);
-    color: var(--mat-sys-on-surface-variant, #49454f);
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--md-sys-color-on-surface-variant);
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -116,26 +144,91 @@
   }
 
   .price {
-    font-family: var(--mat-sys-title-large-font, Roboto, sans-serif);
-    font-size: var(--mat-sys-title-large-size, 20px);
-    font-weight: var(--mat-sys-title-large-weight, 600);
-    line-height: var(--mat-sys-title-large-line-height, 28px);
-    color: var(--mat-sys-primary, #6750a4);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--md-sys-color-primary);
+    padding: 8px 12px;
+    background: var(--md-sys-color-primary-container);
+    border-radius: 12px;
+    text-align: center;
   }
 }
 
-// Ensure touch targets are at least 48px
-.menu-item-card {
-  min-height: 48px;
+// Responsive font adjustments
+@media (max-width: 767px) {
+  .menu-browser {
+    padding: 16px;
+  }
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    min-height: 48px;
-    min-width: 48px;
+  .menu-grid {
+    gap: 16px;
+  }
+
+  .menu-item-card {
+    min-height: 280px;
+
+    img {
+      height: 140px;
+    }
+
+    mat-card-content {
+      padding: 16px;
+    }
+
+    .item-name {
+      font-size: 16px;
+      min-height: 40px;
+    }
+
+    .item-description {
+      font-size: 14px;
+    }
+
+    .price {
+      font-size: 20px;
+    }
+  }
+}
+
+@media (max-width: 599px) {
+  .menu-item-card {
+    min-height: 260px;
+
+    img {
+      height: 120px;
+    }
+
+    mat-card-content {
+      padding: 14px;
+      gap: 8px;
+    }
+
+    .item-name {
+      font-size: 15px;
+      min-height: 36px;
+    }
+
+    .price {
+      font-size: 18px;
+      padding: 6px 10px;
+    }
+  }
+}
+
+// Prevent text selection for better touch experience
+.menu-item-card {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+// Pulse animation for loading
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
   }
 }
