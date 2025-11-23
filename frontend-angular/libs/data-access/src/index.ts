@@ -4,6 +4,7 @@ export * from './lib/testing';
 export * from './lib/services/api-client.service';
 export * from './lib/services/socket.service';
 export * from './lib/services/orders-api.service';
+export * from './lib/services/dashboard-api.service';
 export * from './lib/interceptors/auth.interceptor';
 export * from './lib/models';
 export * from './lib/+state/orders/orders.actions';
