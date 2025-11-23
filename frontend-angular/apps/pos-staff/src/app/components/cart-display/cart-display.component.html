@@ -1,0 +1,136 @@
+<div class="cart-display">
+  <!-- Header with item count and clear button -->
+  <div class="cart-header">
+    <h2>Cart ({{ itemCount() }})</h2>
+    @if (itemCount() > 0) {
+      <button
+        mat-button
+        color="warn"
+        (click)="clearCart()"
+        data-testid="clear-cart"
+      >
+        Clear
+      </button>
+    }
+  </div>
+
+  <!-- Empty state -->
+  @if (itemCount() === 0) {
+    <div class="empty-cart">
+      <mat-icon class="empty-icon">shopping_cart</mat-icon>
+      <p class="empty-text">Cart is empty</p>
+      <p class="empty-subtext">Add items to get started</p>
+    </div>
+  }
+
+  <!-- Cart items list -->
+  @else {
+    <mat-list class="cart-items">
+      @for (item of cartItems(); track $index) {
+        <mat-list-item class="cart-item">
+          <div class="item-content">
+            <!-- Item info -->
+            <div class="item-header">
+              <div class="item-name">{{ item.menuItem.name }}</div>
+              <div class="item-price">
+                ${{ item.menuItem.price | number : '1.2-2' }}
+              </div>
+            </div>
+
+            <!-- Modifiers -->
+            @if (item.modifiers && item.modifiers.length > 0) {
+              <div class="item-modifiers">
+                @for (modifier of item.modifiers; track modifier.id) {
+                  <span class="modifier">
+                    + {{ modifier.name }}
+                    @if (modifier.priceAdjustment > 0) {
+                      (${{ modifier.priceAdjustment | number : '1.2-2' }})
+                    }
+                  </span>
+                }
+              </div>
+            }
+
+            <!-- Special instructions -->
+            @if (item.specialInstructions) {
+              <div class="item-instructions">
+                <mat-icon class="instructions-icon">edit_note</mat-icon>
+                <span>{{ item.specialInstructions }}</span>
+              </div>
+            }
+
+            <!-- Quantity controls and subtotal -->
+            <div class="item-footer">
+              <div class="quantity-controls">
+                <button
+                  mat-icon-button
+                  color="primary"
+                  (click)="decreaseQuantity($index)"
+                  [disabled]="item.quantity <= 1"
+                  [attr.data-testid]="'decrease-quantity-' + $index"
+                  aria-label="Decrease quantity"
+                >
+                  <mat-icon>remove_circle_outline</mat-icon>
+                </button>
+                <span class="quantity">{{ item.quantity }}</span>
+                <button
+                  mat-icon-button
+                  color="primary"
+                  (click)="increaseQuantity($index)"
+                  [attr.data-testid]="'increase-quantity-' + $index"
+                  aria-label="Increase quantity"
+                >
+                  <mat-icon>add_circle_outline</mat-icon>
+                </button>
+              </div>
+              <div class="item-subtotal">
+                ${{ item.subtotal | number : '1.2-2' }}
+              </div>
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="removeItem($index)"
+                [attr.data-testid]="'remove-item-' + $index"
+                aria-label="Remove item"
+              >
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </div>
+          </div>
+        </mat-list-item>
+        @if (!$last) {
+          <mat-divider></mat-divider>
+        }
+      }
+    </mat-list>
+
+    <!-- Footer with totals and checkout -->
+    <div class="cart-footer">
+      <div class="totals">
+        <div class="total-row subtotal-row">
+          <span class="total-label">Subtotal:</span>
+          <span class="total-value">${{ subtotal() | number : '1.2-2' }}</span>
+        </div>
+        <div class="total-row tax-row">
+          <span class="total-label">Tax (8.5%):</span>
+          <span class="total-value">${{ tax() | number : '1.2-2' }}</span>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="total-row total-row-main">
+          <span class="total-label">Total:</span>
+          <span class="total-value">${{ total() | number : '1.2-2' }}</span>
+        </div>
+      </div>
+      <button
+        mat-raised-button
+        color="primary"
+        class="checkout-button"
+        (click)="checkout()"
+        data-testid="checkout-button"
+      >
+        <mat-icon>shopping_cart_checkout</mat-icon>
+        Checkout
+      </button>
+    </div>
+  }
+</div>
