@@ -1,0 +1,140 @@
+// POS Component Styles
+// Material Design 3 with responsive two-column layout
+
+.pos-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--md-sys-color-surface);
+}
+
+.pos-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  height: 100%;
+  overflow: hidden;
+
+  // Desktop: Two-column layout (60/40 split)
+  @media (min-width: 960px) {
+    grid-template-columns: 60fr 40fr;
+    gap: 16px;
+    padding: 16px;
+  }
+}
+
+.menu-section {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--md-sys-color-surface);
+  border-radius: 0;
+
+  @media (min-width: 960px) {
+    border-radius: 12px;
+    box-shadow: var(--md-sys-elevation-1);
+  }
+
+  .section-title {
+    margin: 0;
+    padding: 16px;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface);
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+
+    @media (min-width: 960px) {
+      padding: 20px 24px;
+      font-size: 1.75rem;
+    }
+  }
+
+  app-menu-browser {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+}
+
+.cart-section {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--md-sys-color-surface);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+
+  @media (min-width: 960px) {
+    border-top: none;
+    border-radius: 12px;
+    box-shadow: var(--md-sys-elevation-1);
+    position: sticky;
+    top: 16px;
+    max-height: calc(100vh - 32px);
+  }
+
+  app-cart-display {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+}
+
+// Mobile: Stack vertically (menu first, then cart)
+@media (max-width: 959px) {
+  .pos-content {
+    grid-template-rows: 1fr auto;
+    grid-template-columns: 1fr;
+  }
+
+  .menu-section {
+    overflow-y: auto;
+  }
+
+  .cart-section {
+    max-height: 40vh;
+    overflow-y: auto;
+  }
+}
+
+// Tablet adjustments
+@media (min-width: 600px) and (max-width: 959px) {
+  .pos-content {
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .menu-section,
+  .cart-section {
+    border-radius: 8px;
+  }
+
+  .cart-section {
+    border-top: none;
+    max-height: 45vh;
+  }
+}
+
+// Smooth scrolling
+.menu-section,
+.cart-section {
+  scroll-behavior: smooth;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--md-sys-color-surface-variant);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--md-sys-color-outline);
+    border-radius: 4px;
+
+    &:hover {
+      background: var(--md-sys-color-on-surface-variant);
+    }
+  }
+}

@@ -1,0 +1,18 @@
+<div class="pos-container">
+  <div class="pos-content">
+    <!-- Menu Section (Left Column) -->
+    <div class="menu-section">
+      <h2 class="section-title">Menu</h2>
+      <app-menu-browser
+        (itemSelected)="onMenuItemSelected($event)">
+      </app-menu-browser>
+    </div>
+
+    <!-- Cart Section (Right Column) -->
+    <div class="cart-section">
+      <app-cart-display
+        (checkoutClicked)="onCheckout()">
+      </app-cart-display>
+    </div>
+  </div>
+</div>
