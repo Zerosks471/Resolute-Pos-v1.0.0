@@ -3,6 +3,8 @@ import {
   isDevMode,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
+  APP_INITIALIZER,
+  inject,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
@@ -27,15 +29,15 @@ import {
 import { environment } from '../environments/environment';
 
 // Initialize API client with environment URL
-const initializeApiClient = () => {
-  const apiClient = new ApiClientService();
-  apiClient.setBaseUrl(environment.apiUrl);
-  return apiClient;
-};
+function initializeApp() {
+  return () => {
+    const apiClient = inject(ApiClientService);
+    apiClient.setBaseUrl(environment.apiUrl);
+  };
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    { provide: ApiClientService, useFactory: initializeApiClient },
     // provideClientHydration(withEventReplay()), // Disabled for now - causing duplicate rendering with Material components
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
@@ -59,5 +61,10 @@ export const appConfig: ApplicationConfig = {
       traceLimit: 75,
       connectInZone: true,
     }),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      multi: true,
+    },
   ],
 };
