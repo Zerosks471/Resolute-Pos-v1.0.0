@@ -89,9 +89,77 @@ exports.getTodaysTopSellingItemsDB = async () => {
         ORDER BY
             oi_c.orders_count DESC;
         `;
-    
+
         const [result] = await conn.query(sql);
         return result;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
+exports.getTodaysTotalSalesDB = async () => {
+    try {
+        const conn = getMySqlPromiseConnection();
+
+        const sql = `
+        SELECT
+            COALESCE(SUM(oi.price * oi.quantity), 0) AS total_sales
+        FROM
+            order_items oi
+            INNER JOIN orders o ON oi.order_id = o.id
+        WHERE
+            DATE(o.\`date\`) = CURDATE()
+            AND o.status = 'completed'
+            AND oi.status <> 'cancelled'
+        `;
+
+        const [result] = await conn.query(sql);
+        return parseFloat(result[0].total_sales) || 0;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
+exports.getActiveTablesCountDB = async () => {
+    try {
+        const conn = getMySqlPromiseConnection();
+
+        const sql = `
+        SELECT
+            COUNT(DISTINCT table_id) AS active_tables
+        FROM
+            orders
+        WHERE
+            table_id IS NOT NULL
+            AND status = 'created'
+        `;
+
+        const [result] = await conn.query(sql);
+        return result[0].active_tables || 0;
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
+exports.getKitchenQueueCountDB = async () => {
+    try {
+        const conn = getMySqlPromiseConnection();
+
+        const sql = `
+        SELECT
+            COUNT(*) AS kitchen_queue
+        FROM
+            order_items
+        WHERE
+            DATE(\`date\`) = CURDATE()
+            AND status IN ('created', 'preparing')
+        `;
+
+        const [result] = await conn.query(sql);
+        return result[0].kitchen_queue || 0;
     } catch (error) {
         console.error(error);
         throw error;

@@ -58,6 +58,7 @@
                   [matBadgeHidden]="!item.badge || item.badge() === 0"
                   matBadgeColor="accent"
                   matBadgeSize="small"
+                  [attr.aria-hidden]="item.badge && item.badge() > 0 ? 'false' : 'true'"
                 >
                   {{ item.icon }}
                 </mat-icon>
@@ -89,6 +90,7 @@
                   [matBadgeHidden]="!item.badge || item.badge() === 0"
                   matBadgeColor="accent"
                   matBadgeSize="small"
+                  [attr.aria-hidden]="item.badge && item.badge() > 0 ? 'false' : 'true'"
                 >
                   {{ item.icon }}
                 </mat-icon>
