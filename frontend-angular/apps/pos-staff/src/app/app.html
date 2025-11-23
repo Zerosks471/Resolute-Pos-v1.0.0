@@ -1,1 +1,106 @@
-<router-outlet></router-outlet>
+<!-- Only show navigation for authenticated routes -->
+@if (router.url !== '/login' && router.url !== '/unauthorized') {
+  <div class="app-container">
+    <!-- Top Toolbar -->
+    <mat-toolbar class="app-toolbar" color="primary">
+      <button
+        mat-icon-button
+        (click)="toggleSidenav()"
+        aria-label="Toggle navigation menu"
+        class="menu-button"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <span class="app-title">{{ title }}</span>
+
+      <span class="spacer"></span>
+
+      <!-- User Info -->
+      @if (currentUser$ | async; as user) {
+        <div class="user-info">
+          <mat-icon class="user-icon">account_circle</mat-icon>
+          <span class="user-name">{{ user.name }}</span>
+        </div>
+      }
+
+      <!-- Logout Button -->
+      <button
+        mat-icon-button
+        (click)="logout()"
+        aria-label="Logout"
+        class="logout-button"
+      >
+        <mat-icon>logout</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <!-- Sidenav Container -->
+    <mat-sidenav-container class="sidenav-container">
+      <!-- Side Navigation (Desktop/Tablet) -->
+      @if (!isMobile() && !isTablet()) {
+        <mat-sidenav
+          [opened]="sidenavOpened()"
+          [mode]="isMobile() ? 'over' : 'side'"
+          class="sidenav"
+        >
+          <mat-nav-list class="nav-list">
+            @for (item of navItems; track item.route) {
+              <a
+                mat-list-item
+                (click)="navigate(item.route)"
+                [class.active]="isActiveRoute(item.route)"
+                class="nav-item"
+              >
+                <mat-icon
+                  matListItemIcon
+                  [matBadge]="item.badge ? item.badge() : null"
+                  [matBadgeHidden]="!item.badge || item.badge() === 0"
+                  matBadgeColor="accent"
+                  matBadgeSize="small"
+                >
+                  {{ item.icon }}
+                </mat-icon>
+                <span matListItemTitle>{{ item.label }}</span>
+              </a>
+            }
+          </mat-nav-list>
+        </mat-sidenav>
+      }
+
+      <!-- Main Content Area -->
+      <mat-sidenav-content class="main-content">
+        <div class="content-wrapper" [class.mobile]="isMobile()" [class.tablet]="isTablet()">
+          <router-outlet></router-outlet>
+        </div>
+
+        <!-- Bottom Navigation (Mobile/Tablet) -->
+        @if (isMobile() || isTablet()) {
+          <nav class="bottom-nav">
+            @for (item of navItems; track item.route) {
+              <button
+                mat-button
+                (click)="navigate(item.route)"
+                [class.active]="isActiveRoute(item.route)"
+                class="bottom-nav-item"
+              >
+                <mat-icon
+                  [matBadge]="item.badge ? item.badge() : null"
+                  [matBadgeHidden]="!item.badge || item.badge() === 0"
+                  matBadgeColor="accent"
+                  matBadgeSize="small"
+                >
+                  {{ item.icon }}
+                </mat-icon>
+                <span class="nav-label">{{ item.label }}</span>
+              </button>
+            }
+          </nav>
+        }
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </div>
+} @else {
+  <!-- Login and Unauthorized pages (no navigation) -->
+  <router-outlet></router-outlet>
+}

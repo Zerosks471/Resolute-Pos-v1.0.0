@@ -1,0 +1,360 @@
+// Touch-friendly POS Application Layout
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+// Top Toolbar - Touch Optimized
+.app-toolbar {
+  height: 64px; // Larger for touch
+  padding: 0 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+
+  .menu-button {
+    width: 48px;
+    height: 48px;
+    margin-right: 8px;
+
+    mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  .app-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.15px;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 16px;
+    padding: 8px 12px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+
+    .user-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 500;
+    }
+  }
+
+  .logout-button {
+    width: 48px;
+    height: 48px;
+
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+}
+
+// Sidenav Container
+.sidenav-container {
+  flex: 1 1 auto;
+  height: calc(100vh - 64px);
+}
+
+// Side Navigation - Desktop
+.sidenav {
+  width: 260px;
+  border-right: 1px solid var(--md-sys-color-outline-variant);
+
+  .nav-list {
+    padding: 16px 8px;
+
+    .nav-item {
+      height: 56px; // Large touch target
+      margin-bottom: 4px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      mat-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+        color: var(--md-sys-color-on-surface-variant);
+      }
+
+      span {
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--md-sys-color-on-surface-variant);
+      }
+
+      &:hover {
+        background: var(--md-sys-color-surface-variant);
+
+        mat-icon,
+        span {
+          color: var(--md-sys-color-on-surface);
+        }
+      }
+
+      &.active {
+        background: var(--md-sys-color-secondary-container);
+
+        mat-icon,
+        span {
+          color: var(--md-sys-color-on-secondary-container);
+        }
+      }
+
+      // Touch feedback
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+  }
+}
+
+// Main Content Area
+.main-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .content-wrapper {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 24px;
+    background: var(--md-sys-color-surface);
+
+    &.mobile {
+      padding: 16px;
+      padding-bottom: 88px; // Space for bottom nav
+    }
+
+    &.tablet {
+      padding: 20px;
+      padding-bottom: 88px; // Space for bottom nav
+    }
+
+    // Smooth scrolling for touch
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+}
+
+// Bottom Navigation - Mobile/Tablet
+.bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 72px; // Extra tall for touch
+  background: var(--md-sys-color-surface-container);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  padding: 0 8px;
+
+  .bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 64px;
+    max-width: 120px;
+    height: 64px; // Large touch target
+    padding: 8px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    color: var(--md-sys-color-on-surface-variant);
+
+    mat-icon {
+      font-size: 26px;
+      width: 26px;
+      height: 26px;
+    }
+
+    .nav-label {
+      font-size: 12px;
+      font-weight: 500;
+      text-align: center;
+      line-height: 1.2;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &:hover {
+      background: var(--md-sys-color-surface-variant);
+      color: var(--md-sys-color-on-surface);
+    }
+
+    &.active {
+      background: var(--md-sys-color-secondary-container);
+      color: var(--md-sys-color-on-secondary-container);
+
+      mat-icon {
+        color: var(--md-sys-color-on-secondary-container);
+      }
+    }
+
+    // Touch feedback
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 599px) {
+  // Extra small devices (phones)
+  .app-toolbar {
+    height: 56px;
+    padding: 0 8px;
+
+    .app-title {
+      font-size: 18px;
+    }
+
+    .user-name {
+      display: none; // Hide user name on small screens
+    }
+  }
+
+  .sidenav-container {
+    height: calc(100vh - 56px);
+  }
+
+  .content-wrapper {
+    padding: 12px !important;
+    padding-bottom: 84px !important;
+  }
+
+  .bottom-nav {
+    height: 64px;
+    padding: 0 4px;
+
+    .bottom-nav-item {
+      height: 56px;
+      min-width: 56px;
+
+      mat-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+
+      .nav-label {
+        font-size: 11px;
+      }
+    }
+  }
+}
+
+@media (min-width: 600px) and (max-width: 959px) {
+  // Medium devices (tablets)
+  .content-wrapper {
+    padding: 16px !important;
+    padding-bottom: 88px !important;
+  }
+}
+
+@media (min-width: 960px) {
+  // Large devices (desktops)
+  .content-wrapper {
+    padding: 24px !important;
+  }
+
+  .bottom-nav {
+    display: none; // Hide bottom nav on desktop
+  }
+}
+
+// Global touch-friendly improvements
+::ng-deep {
+  // Larger touch targets for all buttons
+  .mat-mdc-button,
+  .mat-mdc-raised-button,
+  .mat-mdc-icon-button,
+  .mat-mdc-fab {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  // Larger form fields
+  .mat-mdc-form-field {
+    font-size: 16px; // Prevent zoom on mobile
+  }
+
+  // Better spacing for lists
+  .mat-mdc-list-item {
+    min-height: 56px;
+  }
+
+  // Larger checkboxes and radio buttons
+  .mat-mdc-checkbox,
+  .mat-mdc-radio-button {
+    .mdc-checkbox,
+    .mdc-radio {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  // Card touch improvements
+  .mat-mdc-card {
+    border-radius: 16px;
+    margin-bottom: 16px;
+  }
+
+  // Dialog improvements for touch
+  .mat-mdc-dialog-container {
+    border-radius: 20px;
+  }
+}
+
+// Prevent text selection for better touch experience
+.nav-item,
+.bottom-nav-item,
+.menu-button,
+.logout-button {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+// Loading states
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  min-height: 200px;
+}
+
+// Accessibility - ensure focus is visible
+*:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+}
