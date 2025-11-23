@@ -1,5 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -38,6 +38,7 @@ export class App {
   private breakpointObserver = inject(BreakpointObserver);
   private authService = inject(AuthService);
   private cartService = inject(CartService);
+  private platformId = inject(PLATFORM_ID);
 
   protected title = 'Resolute POS';
   protected isMobile = signal(false);
@@ -63,10 +64,12 @@ export class App {
     // Initialize time and date
     this.updateTime();
 
-    // Update time every second
-    this.timeInterval = window.setInterval(() => {
-      this.updateTime();
-    }, 1000);
+    // Update time every second (browser only, not during SSR)
+    if (isPlatformBrowser(this.platformId)) {
+      this.timeInterval = window.setInterval(() => {
+        this.updateTime();
+      }, 1000);
+    }
 
     // Detect screen size and adjust navigation layout
     this.breakpointObserver

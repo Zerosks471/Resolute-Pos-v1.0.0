@@ -3,14 +3,16 @@
   <div class="app-container">
     <!-- Top Toolbar -->
     <mat-toolbar class="app-toolbar" color="primary">
-      <button
-        mat-icon-button
-        (click)="toggleSidenav()"
-        aria-label="Toggle navigation menu"
-        class="menu-button"
-      >
-        <mat-icon>menu</mat-icon>
-      </button>
+      @if (!isMobile() && !isTablet()) {
+        <button
+          mat-icon-button
+          (click)="toggleSidenav()"
+          aria-label="Toggle navigation menu"
+          class="menu-button"
+        >
+          <mat-icon>menu</mat-icon>
+        </button>
+      }
 
       <span class="app-title">{{ title }}</span>
 

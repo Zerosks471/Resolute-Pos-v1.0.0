@@ -8,45 +8,47 @@
 
 // Top Toolbar - Enhanced Visual Design
 .app-toolbar {
-  height: 76px;
-  padding: 0 24px;
+  height: 64px;
+  padding: 0 16px;
   background: linear-gradient(135deg, var(--md-sys-color-primary) 0%, var(--md-sys-color-primary-container) 100%);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
 
   .menu-button {
-    width: 56px;
-    height: 56px;
-    margin-right: 16px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.1);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.15);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
     &:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     &:active {
-      transform: scale(0.96);
+      transform: scale(0.98);
     }
 
     mat-icon {
-      font-size: 32px;
-      width: 32px;
-      height: 32px;
-      color: rgba(255, 255, 255, 0.95);
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      color: white;
     }
   }
 
   .app-title {
-    font-size: 26px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0px;
     color: white;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
 
   .spacer {
@@ -58,87 +60,80 @@
     flex-direction: column;
     align-items: flex-end;
     gap: 2px;
-    margin-right: 24px;
-    padding: 8px 18px;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 6px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 
     .time {
-      font-size: 20px;
-      font-weight: 700;
+      font-size: 15px;
+      font-weight: 600;
       color: white;
-      line-height: 1;
-      letter-spacing: 0.5px;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      line-height: 1.2;
+      letter-spacing: 0.3px;
     }
 
     .date {
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 500;
-      color: rgba(255, 255, 255, 0.85);
-      line-height: 1;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.2;
     }
   }
 
   .user-info {
     display: flex;
     align-items: center;
-    gap: 14px;
-    margin-right: 20px;
-    padding: 12px 20px;
-    border-radius: 28px;
+    gap: 10px;
+    padding: 8px 16px;
+    border-radius: 24px;
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
     &:hover {
       background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     .user-icon {
-      font-size: 30px;
-      width: 30px;
-      height: 30px;
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
       color: white;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
     }
 
     .user-name {
-      font-size: 17px;
+      font-size: 14px;
       font-weight: 600;
       color: white;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
   }
 
   .logout-button {
-    width: 56px;
-    height: 56px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.1);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.15);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
     &:hover {
       background: rgba(255, 100, 100, 0.3);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(255, 0, 0, 0.2);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(255, 0, 0, 0.2);
     }
 
     &:active {
-      transform: scale(0.96);
+      transform: scale(0.98);
     }
 
     mat-icon {
-      font-size: 28px;
-      width: 28px;
-      height: 28px;
-      color: rgba(255, 255, 255, 0.95);
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      color: white;
     }
   }
 }
@@ -146,26 +141,26 @@
 // Sidenav Container
 .sidenav-container {
   flex: 1 1 auto;
-  height: calc(100vh - 76px);
+  height: calc(100vh - 64px);
 }
 
 // Side Navigation - Enhanced Visual Design
 .sidenav {
-  width: 290px;
+  width: 260px;
   background: var(--md-sys-color-surface);
   border-right: none;
-  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
 
   .nav-list {
-    padding: 24px 16px;
+    padding: 16px 12px;
 
     .nav-item {
-      height: 68px;
-      margin-bottom: 10px;
-      border-radius: 18px;
+      height: 56px;
+      margin-bottom: 6px;
+      border-radius: 14px;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      padding: 0 24px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 0 16px;
       position: relative;
       overflow: hidden;
 
@@ -179,33 +174,33 @@
         bottom: 0;
         background: linear-gradient(135deg, transparent 0%, var(--md-sys-color-surface-variant) 100%);
         opacity: 0;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.2s ease;
       }
 
       mat-icon {
-        font-size: 30px;
-        width: 30px;
-        height: 30px;
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
         color: var(--md-sys-color-on-surface-variant);
-        margin-right: 18px;
-        transition: all 0.3s ease;
+        margin-right: 16px;
+        transition: all 0.2s ease;
         position: relative;
         z-index: 1;
       }
 
       span {
-        font-size: 18px;
+        font-size: 15px;
         font-weight: 600;
         color: var(--md-sys-color-on-surface-variant);
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         position: relative;
         z-index: 1;
       }
 
       &:hover {
         background: var(--md-sys-color-surface-container-high);
-        transform: translateX(6px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transform: translateX(4px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
         &::before {
           opacity: 0.5;
@@ -217,28 +212,24 @@
         }
 
         mat-icon {
-          transform: scale(1.1);
+          transform: scale(1.08);
         }
       }
 
       &.active {
         background: linear-gradient(135deg, var(--md-sys-color-primary-container) 0%, var(--md-sys-color-secondary-container) 100%);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-        transform: translateX(8px);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+        transform: translateX(6px);
 
         mat-icon,
         span {
           color: var(--md-sys-color-on-primary-container);
           font-weight: 700;
         }
-
-        mat-icon {
-          filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-        }
       }
 
       &:active {
-        transform: scale(0.97) translateX(4px);
+        transform: scale(0.98) translateX(3px);
       }
     }
   }
@@ -278,17 +269,17 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  height: 84px;
+  height: 72px;
   background: linear-gradient(to top, var(--md-sys-color-surface) 0%, var(--md-sys-color-surface-container) 100%);
   border-top: 1px solid var(--md-sys-color-outline-variant);
-  box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.12), 0 -2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1), 0 -1px 4px rgba(0, 0, 0, 0.06);
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 999;
-  padding: 0 12px;
-  backdrop-filter: blur(12px);
+  padding: 0 8px;
+  backdrop-filter: blur(10px);
 
   .bottom-nav-item {
     flex: 1;
@@ -296,13 +287,13 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 7px;
-    min-width: 76px;
-    max-width: 132px;
-    height: 76px;
-    padding: 12px;
-    border-radius: 20px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 4px;
+    min-width: 64px;
+    max-width: 120px;
+    height: 64px;
+    padding: 8px;
+    border-radius: 16px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     color: var(--md-sys-color-on-surface-variant);
     position: relative;
     overflow: hidden;
@@ -313,20 +304,20 @@
       inset: 0;
       background: radial-gradient(circle at center, var(--md-sys-color-primary-container) 0%, transparent 70%);
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.2s ease;
     }
 
     mat-icon {
-      font-size: 32px;
-      width: 32px;
-      height: 32px;
-      transition: all 0.3s ease;
+      font-size: 26px;
+      width: 26px;
+      height: 26px;
+      transition: all 0.2s ease;
       position: relative;
       z-index: 1;
     }
 
     .nav-label {
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 600;
       text-align: center;
       line-height: 1.2;
@@ -334,7 +325,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
       position: relative;
       z-index: 1;
     }
@@ -342,19 +333,19 @@
     &:hover {
       background: var(--md-sys-color-surface-container-high);
       color: var(--md-sys-color-on-surface);
-      transform: translateY(-4px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
       mat-icon {
-        transform: scale(1.15);
+        transform: scale(1.1);
       }
     }
 
     &.active {
       background: linear-gradient(135deg, var(--md-sys-color-primary-container) 0%, var(--md-sys-color-secondary-container) 100%);
       color: var(--md-sys-color-on-primary-container);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-      transform: translateY(-4px);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+      transform: translateY(-2px);
 
       &::before {
         opacity: 0.3;
@@ -362,8 +353,7 @@
 
       mat-icon {
         color: var(--md-sys-color-on-primary-container);
-        transform: scale(1.2);
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        transform: scale(1.15);
       }
 
       .nav-label {
@@ -373,7 +363,7 @@
     }
 
     &:active {
-      transform: scale(0.94) translateY(-2px);
+      transform: scale(0.96) translateY(-1px);
     }
   }
 }
@@ -382,31 +372,34 @@
 @media (max-width: 599px) {
   // Extra small devices (phones)
   .app-toolbar {
-    height: 64px;
-    padding: 0 12px;
+    height: 56px;
+    padding: 0 8px;
+    gap: 8px;
 
-    .menu-button {
-      width: 52px;
-      height: 52px;
+    .app-title {
+      font-size: 16px;
+    }
 
-      mat-icon {
-        font-size: 28px;
-        width: 28px;
-        height: 28px;
+    .time-date-display {
+      padding: 4px 10px;
+
+      .time {
+        font-size: 13px;
+      }
+
+      .date {
+        font-size: 10px;
       }
     }
 
-    .app-title {
-      font-size: 20px;
-    }
-
     .user-info {
-      padding: 8px 12px;
+      padding: 6px 12px;
+      gap: 8px;
 
       .user-icon {
-        font-size: 24px;
-        width: 24px;
-        height: 24px;
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
       }
 
       .user-name {
@@ -415,42 +408,42 @@
     }
 
     .logout-button {
-      width: 52px;
-      height: 52px;
+      width: 44px;
+      height: 44px;
+
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  .sidenav-container {
+    height: calc(100vh - 56px);
+  }
+
+  .content-wrapper {
+    padding: 12px !important;
+    padding-bottom: 84px !important;
+  }
+
+  .bottom-nav {
+    height: 68px;
+    padding: 0 4px;
+
+    .bottom-nav-item {
+      height: 60px;
+      min-width: 60px;
 
       mat-icon {
         font-size: 24px;
         width: 24px;
         height: 24px;
       }
-    }
-  }
-
-  .sidenav-container {
-    height: calc(100vh - 64px);
-  }
-
-  .content-wrapper {
-    padding: 12px !important;
-    padding-bottom: 92px !important;
-  }
-
-  .bottom-nav {
-    height: 72px;
-    padding: 0 4px;
-
-    .bottom-nav-item {
-      height: 64px;
-      min-width: 64px;
-
-      mat-icon {
-        font-size: 26px;
-        width: 26px;
-        height: 26px;
-      }
 
       .nav-label {
-        font-size: 12px;
+        font-size: 11px;
       }
     }
   }
@@ -459,54 +452,75 @@
 @media (min-width: 600px) and (max-width: 959px) {
   // Medium devices (tablets)
   .app-toolbar {
-    height: 68px;
+    height: 60px;
+    padding: 0 12px;
+    gap: 10px;
 
-    .menu-button {
-      width: 54px;
-      height: 54px;
+    .app-title {
+      font-size: 17px;
+    }
 
-      mat-icon {
-        font-size: 30px;
-        width: 30px;
-        height: 30px;
+    .time-date-display {
+      padding: 5px 12px;
+
+      .time {
+        font-size: 14px;
+      }
+
+      .date {
+        font-size: 10px;
       }
     }
 
-    .app-title {
-      font-size: 22px;
+    .user-info {
+      padding: 7px 14px;
+
+      .user-icon {
+        font-size: 22px;
+        width: 22px;
+        height: 22px;
+      }
+
+      .user-name {
+        font-size: 13px;
+      }
     }
 
     .logout-button {
-      width: 54px;
-      height: 54px;
+      width: 46px;
+      height: 46px;
 
       mat-icon {
-        font-size: 26px;
-        width: 26px;
-        height: 26px;
+        font-size: 22px;
+        width: 22px;
+        height: 22px;
       }
     }
   }
 
   .sidenav-container {
-    height: calc(100vh - 68px);
+    height: calc(100vh - 60px);
   }
 
   .content-wrapper {
     padding: 16px !important;
-    padding-bottom: 92px !important;
+    padding-bottom: 84px !important;
   }
 
   .bottom-nav {
-    height: 76px;
+    height: 70px;
 
     .bottom-nav-item {
-      height: 68px;
+      height: 62px;
 
       mat-icon {
-        font-size: 28px;
-        width: 28px;
-        height: 28px;
+        font-size: 25px;
+        width: 25px;
+        height: 25px;
+      }
+
+      .nav-label {
+        font-size: 11px;
       }
     }
   }
