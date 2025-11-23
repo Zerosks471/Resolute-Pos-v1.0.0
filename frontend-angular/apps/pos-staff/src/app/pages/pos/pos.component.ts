@@ -1,7 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
 import { MenuBrowserComponent } from '../../components/menu-browser/menu-browser.component';
 import { CartDisplayComponent } from '../../components/cart-display/cart-display.component';
+import { ItemCustomizationDialogComponent, ItemCustomizationResult } from '../../components/item-customization-dialog/item-customization-dialog.component';
 import { CartService, MenuItem } from '@resolute-pos/data-access';
 
 /**
@@ -17,13 +19,31 @@ import { CartService, MenuItem } from '@resolute-pos/data-access';
 })
 export class PosComponent {
   private cartService = inject(CartService);
+  private dialog = inject(MatDialog);
 
   /**
    * Handle menu item selection
-   * Adds the selected item to the cart with a default quantity of 1
+   * Opens customization dialog before adding to cart
    */
   onMenuItemSelected(item: MenuItem): void {
-    this.cartService.addItem(item, 1, undefined, undefined);
+    const dialogRef = this.dialog.open(ItemCustomizationDialogComponent, {
+      width: '600px',
+      maxWidth: '90vw',
+      data: { item },
+      disableClose: false,
+      autoFocus: true,
+    });
+
+    dialogRef.afterClosed().subscribe((result: ItemCustomizationResult | undefined) => {
+      if (result) {
+        this.cartService.addItem(
+          result.item,
+          result.quantity,
+          result.selectedModifiers,
+          result.specialInstructions
+        );
+      }
+    });
   }
 
   /**

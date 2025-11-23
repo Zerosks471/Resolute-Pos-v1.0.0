@@ -1,0 +1,107 @@
+<div class="customization-dialog">
+  <h2 mat-dialog-title class="dialog-title">
+    {{ item.name }}
+    @if (item.description) {
+      <span class="description">{{ item.description }}</span>
+    }
+  </h2>
+
+  <mat-dialog-content class="dialog-content">
+    <form [formGroup]="form">
+      <!-- Price Display -->
+      <div class="price-section">
+        <span class="base-price">Base Price: ${{ item.price.toFixed(2) }}</span>
+      </div>
+
+      <!-- Quantity Selector -->
+      <div class="quantity-section">
+        <label class="section-label">Quantity</label>
+        <div class="quantity-controls">
+          <button
+            type="button"
+            mat-icon-button
+            (click)="decrementQuantity()"
+            [disabled]="form.get('quantity')?.value === 1"
+            aria-label="Decrease quantity"
+          >
+            <mat-icon>remove</mat-icon>
+          </button>
+          <input
+            type="number"
+            formControlName="quantity"
+            class="quantity-input"
+            min="1"
+            max="99"
+            aria-label="Quantity"
+          />
+          <button
+            type="button"
+            mat-icon-button
+            (click)="incrementQuantity()"
+            [disabled]="form.get('quantity')?.value === 99"
+            aria-label="Increase quantity"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modifiers Section -->
+      @if (item.modifiers && item.modifiers.length > 0) {
+        <div class="modifiers-section">
+          <label class="section-label">Modifiers</label>
+          <div class="modifiers-list" formArrayName="modifiers">
+            @for (modifier of modifiersArray.controls; track $index) {
+              <div [formGroupName]="$index" class="modifier-item">
+                <mat-checkbox formControlName="selected">
+                  <span class="modifier-name">{{ modifier.get('name')?.value }}</span>
+                  <span class="modifier-price">
+                    +${{ modifier.get('priceAdjustment')?.value.toFixed(2) }}
+                  </span>
+                </mat-checkbox>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Special Instructions -->
+      <div class="instructions-section">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Special Instructions</mat-label>
+          <textarea
+            matInput
+            formControlName="specialInstructions"
+            rows="3"
+            maxlength="200"
+            placeholder="Add any special requests..."
+          ></textarea>
+          <mat-hint align="end">
+            {{ form.get('specialInstructions')?.value?.length || 0 }}/200
+          </mat-hint>
+        </mat-form-field>
+      </div>
+
+      <!-- Total Price -->
+      <div class="total-section">
+        <span class="total-label">Total:</span>
+        <span class="total-price">${{ totalPrice.toFixed(2) }}</span>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="dialog-actions">
+    <button mat-button (click)="onCancel()" type="button">
+      Cancel
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onAddToCart()"
+      [disabled]="form.invalid"
+      type="button"
+    >
+      Add to Cart
+    </button>
+  </mat-dialog-actions>
+</div>
