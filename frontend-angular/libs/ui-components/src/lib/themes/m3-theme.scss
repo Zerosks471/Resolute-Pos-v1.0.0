@@ -1,0 +1,40 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+// Material Design 3 theme - using new theming API
+$resolute-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$blue-palette,
+    tertiary: mat.$green-palette,
+  ),
+  typography: (
+    brand-family: 'Roboto, sans-serif',
+    plain-family: 'Roboto, sans-serif',
+  ),
+  density: (
+    scale: 0,
+  ),
+));
+
+// Dark theme variant
+$resolute-dark-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$blue-palette,
+    tertiary: mat.$green-palette,
+  ),
+));
+
+// Note: In Material Design 3, error/warn colors are derived from the theme-type
+// and do not need to be explicitly configured. The system automatically provides
+// appropriate error colors based on the light/dark theme.
+
+// Apply theme
+@include mat.all-component-themes($resolute-theme);
+
+// Dark mode support
+.dark-theme {
+  @include mat.all-component-colors($resolute-dark-theme);
+}

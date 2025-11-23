@@ -1,10 +1,11 @@
 const { Router } = require("express");
-const { signIn, signOut, getNewAccessToken, removeDeviceAccessToken, getDevices } = require("../controllers/auth.controller");
+const { signIn, pinLogin, signOut, getNewAccessToken, removeDeviceAccessToken, getDevices } = require("../controllers/auth.controller");
 const { isLoggedIn, isAuthenticated, hasRefreshToken } = require("../middlewares/auth.middleware");
 
 const router = Router();
 
 router.post("/signin", signIn);
+router.post("/pin-login", pinLogin);
 router.post("/signout", isLoggedIn, isAuthenticated, signOut);
 router.post("/refresh-token", hasRefreshToken, getNewAccessToken);
 router.post("/remove-device", isLoggedIn, isAuthenticated, removeDeviceAccessToken);

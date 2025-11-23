@@ -1,0 +1,69 @@
+{
+  "$schema": "../../node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+        ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "api-calls",
+      "urls": [
+        "http://localhost:3000/api/**",
+        "https://*/api/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 100,
+        "maxAge": "1h",
+        "timeout": "10s",
+        "strategy": "freshness"
+      }
+    },
+    {
+      "name": "menu-items",
+      "urls": [
+        "**/api/v1/menu/**",
+        "**/api/v1/categories/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 50,
+        "maxAge": "6h",
+        "timeout": "5s",
+        "strategy": "performance"
+      }
+    },
+    {
+      "name": "orders",
+      "urls": [
+        "**/api/v1/orders/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 100,
+        "maxAge": "30m",
+        "timeout": "10s",
+        "strategy": "freshness"
+      }
+    }
+  ]
+}

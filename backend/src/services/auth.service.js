@@ -32,6 +32,32 @@ exports.signInDB = async (username, password) => {
     }
 };
 
+exports.pinLoginDB = async (pin) => {
+
+    const conn = getMySqlPromiseConnection();
+
+    try {
+        const sql = `
+        SELECT username, password, name, role, photo, designation, phone, email, scope FROM users
+        WHERE pin = ?
+        LIMIT 1;
+        `;
+
+        const [result] = await conn.query(sql, [pin]);
+        const user = result[0];
+
+        if(!user) {
+            return null;
+        }
+
+        return user;
+
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+};
+
 exports.addRefreshTokenDB = async (username, refreshToken, expiry, deviceIP, deviceName, deviceLocation) => {
 
     const conn = getMySqlPromiseConnection();

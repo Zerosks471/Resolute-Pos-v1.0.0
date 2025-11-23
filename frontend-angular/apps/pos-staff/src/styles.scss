@@ -1,0 +1,16 @@
+// Import theme from ui-components library
+@use '../../../libs/ui-components/src/lib/themes/m3-theme.scss';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: Roboto, sans-serif;
+}

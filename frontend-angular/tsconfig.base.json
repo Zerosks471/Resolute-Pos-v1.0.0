@@ -1,0 +1,26 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@resolute-pos/ui-components": ["libs/ui-components/src/index.ts"],
+      "@resolute-pos/data-access": ["libs/data-access/src/index.ts"],
+      "@resolute-pos/auth": ["libs/auth/src/index.ts"],
+      "@resolute-pos/offline-sync": ["libs/offline-sync/src/index.ts"],
+      "@resolute-pos/payment": ["libs/payment/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

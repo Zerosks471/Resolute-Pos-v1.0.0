@@ -1,0 +1,102 @@
+{
+  "name": "pos-staff",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/pos-staff/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/pos-staff",
+        "browser": "apps/pos-staff/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/pos-staff/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/pos-staff/public"
+          },
+          {
+            "glob": "manifest.webmanifest",
+            "input": "apps/pos-staff/src",
+            "output": "/"
+          }
+        ],
+        "styles": ["apps/pos-staff/src/styles.scss"],
+        "server": "apps/pos-staff/src/main.server.ts",
+        "ssr": {
+          "entry": "apps/pos-staff/src/server.ts"
+        },
+        "outputMode": "server"
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all",
+          "serviceWorker": "apps/pos-staff/ngsw-config.json"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@angular/build:dev-server",
+      "configurations": {
+        "production": {
+          "buildTarget": "pos-staff:build:production"
+        },
+        "development": {
+          "buildTarget": "pos-staff:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular/build:extract-i18n",
+      "options": {
+        "buildTarget": "pos-staff:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/pos-staff/jest.config.ts",
+        "tsConfig": "apps/pos-staff/tsconfig.spec.json"
+      }
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "pos-staff:build",
+        "port": 4200,
+        "staticFilePath": "dist/apps/pos-staff/browser",
+        "spa": true
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 const { CONFIG } = require("../config");
-const { signInDB, removeRefreshTokenDB, addRefreshTokenDB, verifyRefreshTokenDB, removeRefreshTokenByDeviceIdDB, getDevicesDB } = require("../services/auth.service");
+const { signInDB, pinLoginDB, removeRefreshTokenDB, addRefreshTokenDB, verifyRefreshTokenDB, removeRefreshTokenByDeviceIdDB, getDevicesDB } = require("../services/auth.service");
 const { generateAccessToken, generateRefreshToken } = require("../utils/jwt");
 
 exports.signIn = async (req, res) => {
@@ -80,6 +80,93 @@ exports.signIn = async (req, res) => {
             });
         }
         
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong! Please try later!"
+        });
+    }
+}
+
+exports.pinLogin = async (req, res) => {
+    try {
+
+        const pin = req.body.pin;
+
+        if(!pin) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide a PIN!"
+            });
+        }
+
+        const result = await pinLoginDB(pin);
+
+        if(result) {
+            // set cookie
+            const cookieOptions = {
+                expires: new Date(Date.now() + parseInt(CONFIG.COOKIE_EXPIRY)),
+                httpOnly: true,
+                domain: CONFIG.FRONTEND_DOMAIN_COOKIE,
+                sameSite: false,
+                secure: process.env.NODE_ENV == "production",
+                path: "/"
+            };
+
+            const refreshTokenExpiry = new Date(Date.now() + parseInt(CONFIG.COOKIE_EXPIRY_REFRESH));
+            const cookieRefreshTokenOptions = {
+                expires: refreshTokenExpiry,
+                httpOnly: true,
+                domain: CONFIG.FRONTEND_DOMAIN_COOKIE,
+                sameSite: false,
+                secure: process.env.NODE_ENV == "production",
+                path: "/"
+            };
+
+            result.password = undefined;
+            const payload = {
+                username: result.username,
+                name: result.name,
+                role: result.role,
+                scope: result.scope
+            }
+            const accessToken = generateAccessToken(payload);
+            const refreshToken = generateRefreshToken(payload);
+
+            res.cookie('accessToken', accessToken, cookieOptions);
+            res.cookie('refreshToken', refreshToken, cookieRefreshTokenOptions);
+            res.cookie('resolutepos__authenticated', true, {
+                expires: new Date(Date.now() + parseInt(CONFIG.COOKIE_EXPIRY_REFRESH)),
+                domain: CONFIG.FRONTEND_DOMAIN_COOKIE,
+                sameSite: false,
+                secure: process.env.NODE_ENV == "production",
+                path: "/"
+            })
+
+            // set refresh token in DB.
+            const deviceDetails = req.useragent;
+
+            const deviceIP = req.connection.remoteAddress;
+            const deviceName = `${deviceDetails.platform}\nBrowser: ${deviceDetails.browser}`;
+            const deviceLocation = "";
+            await addRefreshTokenDB(result.username, refreshToken, refreshTokenExpiry, deviceIP, deviceName, deviceLocation);
+
+            return res.status(200).json({
+                success: true,
+                message: "Login Successful.",
+                accessToken,
+                user: result
+            })
+
+        } else {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid PIN!"
+            });
+        }
+
 
     } catch (error) {
         console.error(error);

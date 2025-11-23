@@ -1,0 +1,52 @@
+/**
+ * Authentication guard
+ * Protects routes from unauthenticated access
+ */
+
+import { inject } from '@angular/core';
+import { Router, CanActivateFn } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+
+export const authGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.isAuthenticated()) {
+    return true;
+  }
+
+  // Redirect to login with return URL
+  router.navigate(['/login'], {
+    queryParams: { returnUrl: state.url },
+  });
+  return false;
+};
+
+/**
+ * Scope guard factory
+ * Protects routes based on user scopes
+ */
+export function scopeGuard(requiredScopes: string[]): CanActivateFn {
+  return (route, state) => {
+    const authService = inject(AuthService);
+    const router = inject(Router);
+
+    if (!authService.isAuthenticated()) {
+      router.navigate(['/login'], {
+        queryParams: { returnUrl: state.url },
+      });
+      return false;
+    }
+
+    const hasRequiredScope = requiredScopes.some((scope) =>
+      authService.hasScope(scope)
+    );
+
+    if (!hasRequiredScope) {
+      router.navigate(['/unauthorized']);
+      return false;
+    }
+
+    return true;
+  };
+}
