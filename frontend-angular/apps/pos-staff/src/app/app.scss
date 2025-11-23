@@ -6,29 +6,34 @@
   overflow: hidden;
 }
 
-// Top Toolbar - Touch Optimized
+// Top Toolbar - Touch Optimized POS Style
 .app-toolbar {
-  height: 64px; // Larger for touch
-  padding: 0 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 72px; // Extra large for touch
+  padding: 0 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   z-index: 1000;
 
   .menu-button {
-    width: 48px;
-    height: 48px;
-    margin-right: 8px;
+    width: 56px;
+    height: 56px;
+    margin-right: 12px;
+    transition: transform 0.2s ease;
+
+    &:active {
+      transform: scale(0.95);
+    }
 
     mat-icon {
-      font-size: 28px;
-      width: 28px;
-      height: 28px;
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
     }
   }
 
   .app-title {
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 0.15px;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.25px;
   }
 
   .spacer {
@@ -38,32 +43,42 @@
   .user-info {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-right: 16px;
-    padding: 8px 12px;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.1);
+    gap: 12px;
+    margin-right: 20px;
+    padding: 10px 16px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.15);
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
 
     .user-icon {
-      font-size: 24px;
-      width: 24px;
-      height: 24px;
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
     }
 
     .user-name {
-      font-size: 14px;
-      font-weight: 500;
+      font-size: 16px;
+      font-weight: 600;
     }
   }
 
   .logout-button {
-    width: 48px;
-    height: 48px;
+    width: 56px;
+    height: 56px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+
+    &:active {
+      transform: scale(0.95);
+    }
 
     mat-icon {
-      font-size: 24px;
-      width: 24px;
-      height: 24px;
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
     }
   }
 }
@@ -71,39 +86,42 @@
 // Sidenav Container
 .sidenav-container {
   flex: 1 1 auto;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 72px);
 }
 
-// Side Navigation - Desktop
+// Side Navigation - Desktop (POS Style)
 .sidenav {
-  width: 260px;
-  border-right: 1px solid var(--md-sys-color-outline-variant);
+  width: 280px;
+  border-right: 2px solid var(--md-sys-color-outline-variant);
 
   .nav-list {
-    padding: 16px 8px;
+    padding: 20px 12px;
 
     .nav-item {
-      height: 56px; // Large touch target
-      margin-bottom: 4px;
-      border-radius: 12px;
+      height: 64px; // Extra large touch target
+      margin-bottom: 8px;
+      border-radius: 16px;
       cursor: pointer;
       transition: all 0.2s ease;
+      padding: 0 20px;
 
       mat-icon {
-        font-size: 24px;
-        width: 24px;
-        height: 24px;
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
         color: var(--md-sys-color-on-surface-variant);
+        margin-right: 16px;
       }
 
       span {
-        font-size: 16px;
-        font-weight: 500;
+        font-size: 18px;
+        font-weight: 600;
         color: var(--md-sys-color-on-surface-variant);
       }
 
       &:hover {
         background: var(--md-sys-color-surface-variant);
+        transform: translateX(4px);
 
         mat-icon,
         span {
@@ -112,11 +130,13 @@
       }
 
       &.active {
-        background: var(--md-sys-color-secondary-container);
+        background: var(--md-sys-color-primary-container);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
         mat-icon,
         span {
-          color: var(--md-sys-color-on-secondary-container);
+          color: var(--md-sys-color-on-primary-container);
+          font-weight: 700;
         }
       }
 
@@ -157,15 +177,15 @@
   }
 }
 
-// Bottom Navigation - Mobile/Tablet
+// Bottom Navigation - Mobile/Tablet (POS Style)
 .bottom-nav {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  height: 72px; // Extra tall for touch
+  height: 80px; // Extra tall for POS touch
   background: var(--md-sys-color-surface-container);
-  border-top: 1px solid var(--md-sys-color-outline-variant);
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  border-top: 2px solid var(--md-sys-color-outline-variant);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
   position: fixed;
   bottom: 0;
   left: 0;
@@ -179,24 +199,24 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    min-width: 64px;
-    max-width: 120px;
-    height: 64px; // Large touch target
-    padding: 8px;
-    border-radius: 12px;
+    gap: 6px;
+    min-width: 72px;
+    max-width: 128px;
+    height: 72px; // Larger touch target
+    padding: 10px;
+    border-radius: 16px;
     transition: all 0.2s ease;
     color: var(--md-sys-color-on-surface-variant);
 
     mat-icon {
-      font-size: 26px;
-      width: 26px;
-      height: 26px;
+      font-size: 30px;
+      width: 30px;
+      height: 30px;
     }
 
     .nav-label {
-      font-size: 12px;
-      font-weight: 500;
+      font-size: 13px;
+      font-weight: 600;
       text-align: center;
       line-height: 1.2;
       max-width: 100%;
@@ -208,14 +228,20 @@
     &:hover {
       background: var(--md-sys-color-surface-variant);
       color: var(--md-sys-color-on-surface);
+      transform: translateY(-2px);
     }
 
     &.active {
-      background: var(--md-sys-color-secondary-container);
-      color: var(--md-sys-color-on-secondary-container);
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-on-primary-container);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
       mat-icon {
-        color: var(--md-sys-color-on-secondary-container);
+        color: var(--md-sys-color-on-primary-container);
+      }
+
+      .nav-label {
+        font-weight: 700;
       }
     }
 
@@ -230,43 +256,75 @@
 @media (max-width: 599px) {
   // Extra small devices (phones)
   .app-toolbar {
-    height: 56px;
-    padding: 0 8px;
+    height: 64px;
+    padding: 0 12px;
+
+    .menu-button {
+      width: 52px;
+      height: 52px;
+
+      mat-icon {
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+      }
+    }
 
     .app-title {
-      font-size: 18px;
+      font-size: 20px;
     }
 
-    .user-name {
-      display: none; // Hide user name on small screens
+    .user-info {
+      padding: 8px 12px;
+
+      .user-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+      }
+
+      .user-name {
+        display: none; // Hide user name on small screens
+      }
     }
-  }
 
-  .sidenav-container {
-    height: calc(100vh - 56px);
-  }
-
-  .content-wrapper {
-    padding: 12px !important;
-    padding-bottom: 84px !important;
-  }
-
-  .bottom-nav {
-    height: 64px;
-    padding: 0 4px;
-
-    .bottom-nav-item {
-      height: 56px;
-      min-width: 56px;
+    .logout-button {
+      width: 52px;
+      height: 52px;
 
       mat-icon {
         font-size: 24px;
         width: 24px;
         height: 24px;
       }
+    }
+  }
+
+  .sidenav-container {
+    height: calc(100vh - 64px);
+  }
+
+  .content-wrapper {
+    padding: 12px !important;
+    padding-bottom: 92px !important;
+  }
+
+  .bottom-nav {
+    height: 72px;
+    padding: 0 4px;
+
+    .bottom-nav-item {
+      height: 64px;
+      min-width: 64px;
+
+      mat-icon {
+        font-size: 26px;
+        width: 26px;
+        height: 26px;
+      }
 
       .nav-label {
-        font-size: 11px;
+        font-size: 12px;
       }
     }
   }
@@ -274,9 +332,57 @@
 
 @media (min-width: 600px) and (max-width: 959px) {
   // Medium devices (tablets)
+  .app-toolbar {
+    height: 68px;
+
+    .menu-button {
+      width: 54px;
+      height: 54px;
+
+      mat-icon {
+        font-size: 30px;
+        width: 30px;
+        height: 30px;
+      }
+    }
+
+    .app-title {
+      font-size: 22px;
+    }
+
+    .logout-button {
+      width: 54px;
+      height: 54px;
+
+      mat-icon {
+        font-size: 26px;
+        width: 26px;
+        height: 26px;
+      }
+    }
+  }
+
+  .sidenav-container {
+    height: calc(100vh - 68px);
+  }
+
   .content-wrapper {
     padding: 16px !important;
-    padding-bottom: 88px !important;
+    padding-bottom: 92px !important;
+  }
+
+  .bottom-nav {
+    height: 76px;
+
+    .bottom-nav-item {
+      height: 68px;
+
+      mat-icon {
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+      }
+    }
   }
 }
 
