@@ -10,12 +10,15 @@ import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
 
 describe('PosComponent', () => {
   let component: PosComponent;
   let fixture: ComponentFixture<PosComponent>;
   let cartService: jest.Mocked<CartService>;
   let mockCartService: Partial<CartService>;
+  let dialog: jest.Mocked<MatDialog>;
+  let mockDialog: Partial<MatDialog>;
   let store: MockStore;
 
   const mockMenuItem: MenuItem = {
@@ -59,10 +62,25 @@ describe('PosComponent', () => {
       })),
     };
 
+    // Create mock dialog service
+    const mockDialogRef = {
+      afterClosed: jest.fn(() => of({
+        item: mockMenuItem,
+        quantity: 1,
+        selectedModifiers: undefined,
+        specialInstructions: undefined,
+      })),
+    };
+
+    mockDialog = {
+      open: jest.fn(() => mockDialogRef),
+    };
+
     await TestBed.configureTestingModule({
       imports: [PosComponent, NoopAnimationsModule],
       providers: [
         { provide: CartService, useValue: mockCartService },
+        { provide: MatDialog, useValue: mockDialog },
         provideMockStore({ initialState }),
       ],
     }).compileComponents();
@@ -70,6 +88,7 @@ describe('PosComponent', () => {
     fixture = TestBed.createComponent(PosComponent);
     component = fixture.componentInstance;
     cartService = TestBed.inject(CartService) as jest.Mocked<CartService>;
+    dialog = TestBed.inject(MatDialog) as jest.Mocked<MatDialog>;
     store = TestBed.inject(MockStore);
     fixture.detectChanges();
   });

@@ -13,7 +13,7 @@ import { MenuItem, MenuCategory } from '@resolute-pos/data-access';
 describe('ItemCustomizationDialogComponent', () => {
   let component: ItemCustomizationDialogComponent;
   let fixture: ComponentFixture<ItemCustomizationDialogComponent>;
-  let mockDialogRef: jasmine.SpyObj<MatDialogRef<ItemCustomizationDialogComponent>>;
+  let mockDialogRef: jest.Mocked<MatDialogRef<ItemCustomizationDialogComponent>>;
 
   const mockItem: MenuItem = {
     id: '1',
@@ -33,7 +33,9 @@ describe('ItemCustomizationDialogComponent', () => {
   };
 
   beforeEach(async () => {
-    mockDialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+    mockDialogRef = {
+      close: jest.fn(),
+    } as jest.Mocked<MatDialogRef<ItemCustomizationDialogComponent>>;
 
     await TestBed.configureTestingModule({
       imports: [
@@ -138,8 +140,8 @@ describe('ItemCustomizationDialogComponent', () => {
     expect(mockDialogRef.close).toHaveBeenCalledWith({
       item: mockItem,
       quantity: 2,
-      selectedModifiers: jasmine.arrayContaining([
-        jasmine.objectContaining({ name: 'Extra Cheese' }),
+      selectedModifiers: expect.arrayContaining([
+        expect.objectContaining({ name: 'Extra Cheese' }),
       ]),
       specialInstructions: 'No onions',
     });
