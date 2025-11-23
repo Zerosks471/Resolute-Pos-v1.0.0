@@ -6,6 +6,7 @@ export * from './lib/services/socket.service';
 export * from './lib/services/orders-api.service';
 export * from './lib/services/menu-api.service';
 export * from './lib/services/dashboard-api.service';
+export * from './lib/services/cart.service';
 export * from './lib/interceptors/auth.interceptor';
 export * from './lib/models';
 export * from './lib/+state/orders/orders.actions';

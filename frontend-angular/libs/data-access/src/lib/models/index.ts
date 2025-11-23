@@ -14,3 +14,6 @@ export * from './order.model';
 
 // Export menu item models
 export * from './menu-item.model';
+
+// Export cart models
+export * from './cart.model';
