@@ -89,70 +89,138 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
       justify-content: center;
       min-height: 100vh;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 1rem;
+      padding: 1.5rem;
     }
 
     .login-card {
-      max-width: 400px;
+      max-width: 480px;
       width: 100%;
+      border-radius: 20px;
+      padding: 16px;
     }
 
     mat-card-header {
       justify-content: center;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
     }
 
     mat-card-title {
-      font-size: 2rem;
+      font-size: 2.5rem;
+      font-weight: 700;
       text-align: center;
+      color: var(--md-sys-color-primary);
     }
 
     mat-card-subtitle {
       text-align: center;
-      font-size: 1rem;
+      font-size: 1.125rem;
+      font-weight: 500;
+      margin-top: 8px;
     }
 
     .pin-display {
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
+      padding: 20px;
+      background: var(--md-sys-color-surface-variant);
+      border-radius: 16px;
     }
 
     .pin-dots {
-      font-size: 2.5rem;
-      min-height: 3rem;
+      font-size: 3rem;
+      min-height: 3.5rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      letter-spacing: 0.5rem;
-      color: var(--mat-sys-primary);
+      letter-spacing: 0.75rem;
+      color: var(--md-sys-color-primary);
+      font-weight: 700;
     }
 
     .error-message {
-      color: var(--mat-sys-error);
-      font-size: 0.875rem;
-      margin-top: 0.5rem;
+      color: var(--md-sys-color-error);
+      font-size: 1rem;
+      font-weight: 500;
+      margin-top: 12px;
+      padding: 8px 12px;
+      background: var(--md-sys-color-error-container);
+      border-radius: 8px;
     }
 
     .pin-pad {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 16px;
     }
 
     .pin-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0.75rem;
+      gap: 16px;
     }
 
     .pin-button {
-      height: 60px;
-      font-size: 1.5rem;
-      font-weight: 500;
+      height: 72px;
+      font-size: 1.75rem;
+      font-weight: 600;
+      border-radius: 12px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .pin-button:not([disabled]):hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .pin-button:not([disabled]):active {
+      transform: scale(0.98);
     }
 
     mat-spinner {
       margin: 0 auto;
+    }
+
+    // Mobile responsive
+    @media (max-width: 599px) {
+      .login-container {
+        padding: 1rem;
+      }
+
+      .login-card {
+        max-width: 100%;
+        padding: 12px;
+      }
+
+      mat-card-title {
+        font-size: 2rem;
+      }
+
+      mat-card-subtitle {
+        font-size: 1rem;
+      }
+
+      .pin-display {
+        margin-bottom: 2rem;
+        padding: 16px;
+      }
+
+      .pin-dots {
+        font-size: 2.5rem;
+        min-height: 3rem;
+      }
+
+      .pin-pad {
+        gap: 12px;
+      }
+
+      .pin-row {
+        gap: 12px;
+      }
+
+      .pin-button {
+        height: 64px;
+        font-size: 1.5rem;
+      }
     }
   `],
 })
