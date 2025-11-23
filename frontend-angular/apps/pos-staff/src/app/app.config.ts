@@ -20,7 +20,8 @@ import {
   appReducer,
   APP_FEATURE_KEY,
   authInterceptor,
-  menuReducer
+  menuReducer,
+  MenuEffects
 } from '@resolute-pos/data-access';
 
 export const appConfig: ApplicationConfig = {
@@ -39,7 +40,7 @@ export const appConfig: ApplicationConfig = {
       [APP_FEATURE_KEY]: appReducer,
       menu: menuReducer,
     }),
-    provideEffects(),
+    provideEffects([MenuEffects]),
     provideStoreDevtools({
       maxAge: 25,
       logOnly: !isDevMode(),

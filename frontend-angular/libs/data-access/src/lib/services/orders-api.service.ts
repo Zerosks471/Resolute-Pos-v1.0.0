@@ -1,13 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiClientService } from './api-client.service';
+import { ApiClientService, ApiResponse } from './api-client.service';
 import { Order } from '../models';
-
-export interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-  message?: string;
-}
 
 @Injectable({
   providedIn: 'root',

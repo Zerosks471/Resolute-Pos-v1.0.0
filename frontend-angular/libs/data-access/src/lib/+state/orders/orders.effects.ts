@@ -16,7 +16,7 @@ export class OrdersEffects {
       switchMap(() =>
         this.ordersApi.getOrders().pipe(
           map((response) =>
-            OrdersActions.loadOrdersSuccess({ orders: response.data })
+            OrdersActions.loadOrdersSuccess({ orders: response.data || [] })
           ),
           catchError((error) =>
             of(OrdersActions.loadOrdersFailure({ error: error.message }))
@@ -32,7 +32,7 @@ export class OrdersEffects {
       switchMap(({ order }) =>
         this.ordersApi.createOrder(order).pipe(
           map((response) =>
-            OrdersActions.createOrderSuccess({ order: response.data })
+            OrdersActions.createOrderSuccess({ order: response.data! })
           ),
           catchError((error) =>
             of(OrdersActions.createOrderFailure({ error: error.message }))
@@ -48,7 +48,7 @@ export class OrdersEffects {
       switchMap(({ orderId, status }) =>
         this.ordersApi.updateOrderStatus(orderId, status).pipe(
           map((response) =>
-            OrdersActions.updateOrderStatusSuccess({ order: response.data })
+            OrdersActions.updateOrderStatusSuccess({ order: response.data! })
           ),
           catchError((error) =>
             of(OrdersActions.loadOrdersFailure({ error: error.message }))

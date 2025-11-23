@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ApiClientService } from './api-client.service';
+import { ApiClientService, ApiResponse } from './api-client.service';
 
 export interface DashboardMetrics {
   totalSales: number;
@@ -9,12 +9,6 @@ export interface DashboardMetrics {
   kitchenQueue: number;
   avgTicket?: number;
   comparedToYesterday?: number;
-}
-
-export interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-  message?: string;
 }
 
 @Injectable({

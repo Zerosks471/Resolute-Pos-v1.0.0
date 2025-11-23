@@ -189,7 +189,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private loadMetrics(): void {
     this.dashboardApi.getTodaysMetrics().subscribe({
       next: (response) => {
-        if (response.success) {
+        if (response.success && response.data) {
           this.metrics = response.data;
         }
       },
